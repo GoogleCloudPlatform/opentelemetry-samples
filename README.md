@@ -13,4 +13,9 @@ This project provides practical examples across multiple programming languages t
 
 ## Repository Structure
 
-*To be populated as samples are added.*
+- **[java](./java)**: Java samples.
+  - **[otlpmetric](./java/otlpmetric)**: OTLP Metric with Google Auth Example.
+  - **[otlptrace](./java/otlptrace)**: OTLP Trace with Google Auth Example.
+- **[golang](./golang)**: Go samples (coming soon).
+- **[javascript](./javascript)**: JavaScript samples (coming soon).
+- **[python](./python)**: Python samples (coming soon).
