@@ -18,10 +18,13 @@ plugins {
 	id 'application'
 }
 
-// examples are not published, so version can be hardcoded
 version = '0.1.0'
 
 description = 'Example showing OTLP exporter with GCP Auth Extension for traces and metrics'
+
+repositories {
+	mavenCentral()
+}
 
 dependencies {
 	implementation("io.opentelemetry:opentelemetry-api:1.62.0")
@@ -42,6 +45,6 @@ def autoconf_config = [
 ]
 
 application {
-	mainClassName = 'com.google.cloud.opentelemetry.example.autoconfauthextension.AutoconfAuthExtensionExample'
+	mainClassName = 'com.google.cloud.opentelemetry.sample.autoconfauthextension.AutoconfAuthExtensionExample'
 	applicationDefaultJvmArgs = autoconf_config
 }
