@@ -8,4 +8,5 @@ pluginManagement {
 include ":resource"
 include ":otlptrace"
 include ":otlpmetric"
+include ":otlp-spring"
 include ":otlpmetrics-function"
