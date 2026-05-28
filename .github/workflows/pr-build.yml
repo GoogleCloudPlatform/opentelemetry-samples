@@ -42,6 +42,9 @@ jobs:
 
   go-samples-build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        sample: [metric/otlpgrpc]
     steps:
     - uses: actions/checkout@v4
     - name: Set up Go
@@ -50,5 +53,39 @@ jobs:
         go-version: '1.26.3'
     - name: Build Go Sample
       run: |
-        cd golang/metric/otlpgrpc
+        cd golang/${{ matrix.sample }}
         go build -v ./...
+
+  go-lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        sample: [metric/otlpgrpc]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.3'
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.64.5
+          working-directory: golang/${{ matrix.sample }}
+
+  go-vulncheck:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        sample: [metric/otlpgrpc]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.3'
+      - name: Run govulncheck
+        uses: golang/govulncheck-action@v1
+        with:
+          go-version-input: '1.26.3'
+          working-directory: golang/${{ matrix.sample }}
