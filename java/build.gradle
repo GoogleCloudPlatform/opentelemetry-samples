@@ -32,4 +32,9 @@ spotless {
 		greclipse()
 		licenseHeaderFile file('license_templates/spotless.license.gradle'), 'plugins|apply|def|import|buildscript|description|version'
 	}
+	yaml {
+		target '**/*.yaml'
+		targetExclude 'license_templates/**'
+		licenseHeaderFile file('license_templates/spotless.license.yaml'), '^[a-zA-Z]'
+	}
 }
