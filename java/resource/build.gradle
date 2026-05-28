@@ -22,6 +22,10 @@ version = '0.1.0'
 
 description = 'Examples for showing resource detection in various GCP environments.'
 
+repositories {
+	mavenCentral()
+}
+
 dependencies {
 	implementation 'io.opentelemetry:opentelemetry-api:1.62.0'
 	// Detects resource attributes from various GCP environments

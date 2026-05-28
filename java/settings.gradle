@@ -1,0 +1,9 @@
+pluginManagement {
+	plugins {
+		id "com.google.cloud.tools.jib" version "3.5.3"
+	}
+}
+
+include ":resource"
+include ":otlptrace"
+include ":otlpmetric"
