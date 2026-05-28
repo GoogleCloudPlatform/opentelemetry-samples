@@ -1,0 +1,26 @@
+# Gradle
+.gradle/
+build/
+*/build/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Eclipse
+.settings/
+.project
+.classpath
+bin/
+*/bin/
+
+# VS Code
+.vscode/
+
+# OS generated
+.DS_Store
+
+# Logs
+*.log
