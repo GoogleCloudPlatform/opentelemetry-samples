@@ -1,4 +1,4 @@
-name: Pull Request Build
+name: PR Build
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  spotless:
+  java-spotless:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -22,7 +22,7 @@ jobs:
         cd java
         ./gradlew spotlessCheck
 
-  build:
+  java-samples-build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
