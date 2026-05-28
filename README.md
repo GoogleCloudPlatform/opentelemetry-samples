@@ -14,8 +14,12 @@ This project provides practical examples across multiple programming languages t
 ## Repository Structure
 
 - **[java](./java)**: Java samples.
-  - **[otlpmetric](./java/otlpmetric)**: OTLP Metric with Google Auth Example.
-  - **[otlptrace](./java/otlptrace)**: OTLP Trace with Google Auth Example.
+  - **[autoconf-auth-extension](./java/autoconf-auth-extension)**: Example showing OTLP exporter with GCP Auth Extension for traces and metrics.
+  - **[otlp-spring](./java/otlp-spring)**: Example showcasing OTLP trace ingest on GCP and Google Auth in a Spring Boot App.
+  - **[otlpmetric](./java/otlpmetric)**: Example for OTLP Metric exporter.
+  - **[otlpmetrics-function](./java/otlpmetrics-function)**: Example showing how to export OpenTelemetry metrics from a Google Cloud Run Function to Google Managed Prometheus using OpenTelemetry Collector running as a sidecar.
+  - **[otlptrace](./java/otlptrace)**: Example showing OTLP exporter being used for traces export to GCP.
+  - **[resource](./java/resource)**: Examples for showing resource detection in various GCP environments.
 - **[golang](./golang)**: Go samples (coming soon).
 - **[javascript](./javascript)**: JavaScript samples (coming soon).
 - **[python](./python)**: Python samples (coming soon).
