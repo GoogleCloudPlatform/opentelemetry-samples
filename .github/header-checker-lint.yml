@@ -1,0 +1,11 @@
+allowedLicenses:
+  - Apache-2.0
+sourceFileExtensions:
+  - gradle
+  - java
+  - sh
+  - Dockerfile
+allowedCopyrightHolders:
+  - Google LLC
+ignoreFiles:
+  - java/license_templates/*
