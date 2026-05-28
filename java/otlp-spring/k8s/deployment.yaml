@@ -1,0 +1,66 @@
+# Copyright 2026 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: telemetry-export
+  namespace: default
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-otlp-trace-example
+  namespace: default
+  labels:
+    app: spring-otlp-trace-example
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      app: spring-otlp-trace-example
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: spring-otlp-trace-example
+        tier: backend
+    spec:
+      serviceAccountName: telemetry-export
+      containers:
+        - name: spring-otlp-trace-example
+          image: us-central1-docker.pkg.dev/%GOOGLE_CLOUD_PROJECT%/otlp-samples/spring-otlp-trace-example:v1
+          imagePullPolicy: Always
+          # required for resource detection in GKE environment
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: CONTAINER_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-otlp-service
+spec:
+  selector:
+    app: spring-otlp-trace-example
+    tier: backend
+  ports:
+    - protocol: TCP
+      port: 60000
+      targetPort: 8080

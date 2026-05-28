@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sample: [otlpmetric, otlptrace, resource, autoconf-auth-extension]
+        sample: [otlpmetric, otlptrace, resource, otlp-spring, otlpmetrics-function, autoconf-auth-extension]
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 17
