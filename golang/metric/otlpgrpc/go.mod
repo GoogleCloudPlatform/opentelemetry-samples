@@ -2,8 +2,6 @@ module github.com/GoogleCloudPlatform/opentelemetry-operations-go/example/metric
 
 go 1.25.0
 
-toolchain go1.26.3
-
 require (
 	go.opentelemetry.io/contrib/detectors/gcp v1.44.0
 	go.opentelemetry.io/otel v1.44.0
