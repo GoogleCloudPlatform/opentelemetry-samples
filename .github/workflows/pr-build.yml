@@ -39,3 +39,16 @@ jobs:
       run: |
         cd java/${{ matrix.sample }}
         ../gradlew build
+
+  go-samples-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.26.3'
+    - name: Build Go Sample
+      run: |
+        cd golang/metric/otlpgrpc
+        go build -v ./...
