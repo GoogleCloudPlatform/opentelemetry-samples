@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ plugins {
 
 description = 'Example showcasing OTLP trace ingest on GCP and Google Auth in a Spring Boot App'
 
-// examples are not published, so version can be hardcoded
 version = '0.1.0'
 
 repositories {
@@ -50,7 +49,7 @@ def autoconf_config = [
 ]
 
 application {
-	mainClass = "com.google.cloud.opentelemetry.examples.otlpspring.Main"
+	mainClass = "com.google.cloud.opentelemetry.sample.otlpspring.Main"
 	applicationDefaultJvmArgs = autoconf_config
 }
 
@@ -63,5 +62,5 @@ jib {
 
 tasks.register('runClient', JavaExec) {
 	classpath = sourceSets.test.runtimeClasspath
-	mainClass = 'com.google.cloud.opentelemetry.examples.otlpspring.MainClient'
+	mainClass = 'com.google.cloud.opentelemetry.sample.otlpspring.MainClient'
 }
