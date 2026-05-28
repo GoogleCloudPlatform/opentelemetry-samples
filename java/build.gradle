@@ -37,4 +37,8 @@ spotless {
 		targetExclude 'license_templates/**'
 		licenseHeaderFile file('license_templates/spotless.license.yaml'), '^[a-zA-Z]'
 	}
+	format 'docker', {
+		target '**/Dockerfile'
+		licenseHeaderFile file('license_templates/spotless.license.dockerfile'), '^(FROM|ARG)'
+	}
 }

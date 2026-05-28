@@ -69,7 +69,7 @@ This example shows how to use the `gcloud` CLI to deploy the function along with
 gcloud beta run deploy cloud-func-helloworld \
  --no-cpu-throttling \
  --container app-function \
- --function com.google.cloud.opentelemetry.examples.otlpmetricsfunction.HelloWorld \
+ --function com.google.cloud.opentelemetry.samples.otlpmetricsfunction.HelloWorld \
  --source=out/deployment \
  --port=8080 \
  --container otel-collector \

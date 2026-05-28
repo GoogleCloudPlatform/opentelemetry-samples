@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,11 @@
  */
 plugins {
 	id 'java'
-	id "com.github.johnrengelman.shadow"
+	id 'com.github.johnrengelman.shadow'
 }
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
-// examples are not published, so version can be hardcoded
 version = '0.1.0'
 
 repositories {
