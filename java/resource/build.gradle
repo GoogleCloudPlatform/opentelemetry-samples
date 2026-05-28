@@ -1,0 +1,51 @@
+/*
+ * Copyright 2023 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+plugins {
+	id 'java'
+	id 'application'
+	id 'com.google.cloud.tools.jib'
+}
+// examples are not published, so version can be hardcoded
+version = '0.1.0'
+
+description = 'Examples for showing resource detection in various GCP environments.'
+
+dependencies {
+	implementation 'io.opentelemetry:opentelemetry-api:1.62.0'
+	// Detects resource attributes from various GCP environments
+	implementation 'io.opentelemetry.contrib:opentelemetry-gcp-resources:1.56.0-alpha'
+	// Provides resources to the autoconfiguration module
+	implementation 'io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.62.0'
+}
+
+mainClassName = 'com.google.cloud.opentelemetry.example.resource.ResourceExample'
+
+jib {
+	from.image = 'gcr.io/distroless/java-debian10:11'
+	containerizingMode = 'packaged'
+}
+
+def autoconf_config = [
+	'-Dotel.traces.exporter=none',
+	'-Dotel.metrics.exporter=none',
+	'-Dotel.logs.exporter=none',
+	'-Dotel.java.global-autoconfigure.enabled=true',
+	'-Dotel.service.name=example-resource',
+]
+
+application {
+	applicationDefaultJvmArgs = autoconf_config
+}
