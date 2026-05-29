@@ -19,15 +19,14 @@ description = "A LangGraph ReAct agent that can run queries on an ephemeral SQLi
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "langchain-community>=0.4.1",
-    "langchain-google-vertexai>=3.2.2",
-    "langgraph>=1.1.10",
+    "langchain-community>=0.4.2",
+    "langchain-google-genai>=4.2.4",
+    "langgraph>=1.2.2",
     "opentelemetry-exporter-gcp-logging>=1.12.0a0",
-    "opentelemetry-exporter-gcp-monitoring>=1.12.0a0",
-    "opentelemetry-exporter-otlp-proto-grpc>=1.41.1",
-    "opentelemetry-instrumentation-httpx>=0.62b1",
-    "opentelemetry-instrumentation-requests>=0.62b1",
-    "opentelemetry-instrumentation-sqlite3>=0.62b1",
+    "opentelemetry-exporter-otlp-proto-grpc>=1.42.1",
+    "opentelemetry-instrumentation-httpx>=0.63b1",
+    "opentelemetry-instrumentation-requests>=0.63b1",
+    "opentelemetry-instrumentation-sqlite3>=0.63b1",
     "opentelemetry-instrumentation-vertexai>=2.2b0",
     "rich>=15.0.0",
 ]

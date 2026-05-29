@@ -20,7 +20,6 @@ gcloud services enable telemetry.googleapis.com logging.googleapis.com monitorin
 This sample writes to Cloud Logging, Cloud Monitoring, and Cloud Trace. Grant yourself the
 following roles to run the example:
 - `roles/logging.logWriter` – see https://cloud.google.com/logging/docs/access-control#permissions_and_roles
-- `roles/monitoring.metricWriter` – see https://cloud.google.com/monitoring/access-control#predefined_roles
 - `roles/telemetry.writer` – see https://cloud.google.com/trace/docs/iam#telemetry-roles
 
 ## Running the example
@@ -28,8 +27,12 @@ following roles to run the example:
 The sample can easily be run in Cloud Shell. You can also use
 [Application Default Credentials][ADC] locally. Clone and set environment variables:
 ```sh
-git clone https://github.com/GoogleCloudPlatform/opentelemetry-operations-python.git
-cd opentelemetry-operations-python/samples/langgraph-sql-agent
+git clone https://github.com/GoogleCloudPlatform/opentelemetry-samples.git
+cd opentelemetry-samples/python/langgraph-sql-agent
+
+# Set the GCP region. This allows langchain_google_genai integration to locate the model.
+# https://reference.langchain.com/python/langchain-google-genai/embeddings/GoogleGenerativeAIEmbeddings/location
+export GOOGLE_CLOUD_LOCATION=global
 
 # Capture GenAI prompts and responses
 export OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=true

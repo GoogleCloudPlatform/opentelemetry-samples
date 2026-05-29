@@ -32,11 +32,15 @@ def _render_message(message: BaseMessage) -> None:
     if message.type not in ("human", "ai"):
         return
 
-    content = (
-        message.content
-        if isinstance(message.content, str)
-        else message.content[-1]["text"]
-    ).strip()
+    try:
+        content = (
+            message.content
+            if isinstance(message.content, str)
+            else message.content[-1]["text"]
+        )
+    except (IndexError, KeyError, TypeError):
+        content = ""
+    content = content.strip()
 
     # Response was probably blocked by a harm category, go check the trace for details
     if message.response_metadata.get("is_blocked", False):
