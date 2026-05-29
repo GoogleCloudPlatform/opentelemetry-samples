@@ -107,7 +107,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer shutdown()
-	tr := otel.Tracer("cloudtrace/example/client")
+	tr := otel.Tracer("trace/sample/client")
 
 	ctx := context.Background()
 	if *keepRunning {
