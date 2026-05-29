@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sample: [metric/otlpgrpc]
+        sample: [metric/otlpgrpc, trace/otlpgrpc]
     steps:
     - uses: actions/checkout@v4
     - name: Set up Go
@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sample: [metric/otlpgrpc]
+        sample: [metric/otlpgrpc, trace/otlpgrpc]
     steps:
       - uses: actions/checkout@v4
       - name: Set up Go
