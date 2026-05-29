@@ -73,7 +73,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer shutdown()
-	tr := otel.Tracer("cloudtrace/example/client")
+	tr := otel.Tracer("trace/sample/client")
 
 	ctx := context.Background()
 	fmt.Println("starting span...")
