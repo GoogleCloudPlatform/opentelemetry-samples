@@ -11,5 +11,7 @@
 # Output of the go coverage tool, specifically `go test -coverprofile`
 *.out
 
-# Specific binary for the sample
+# Specific binaries for the samples
 metric/otlpgrpc/otlpgrpc
+trace/otlpgrpc/otlpgrpc
+trace/otlphttp/otlphttp
