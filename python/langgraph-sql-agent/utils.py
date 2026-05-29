@@ -42,7 +42,8 @@ def _render_message(message: BaseMessage) -> None:
         content = ""
     content = content.strip()
 
-    # Response was probably blocked by a harm category, go check the trace for details
+    # Response was probably blocked by a harm category,
+    # go check the trace for details
     if message.response_metadata.get("is_blocked", False):
         console.print("❌ Response blocked, try again")
 

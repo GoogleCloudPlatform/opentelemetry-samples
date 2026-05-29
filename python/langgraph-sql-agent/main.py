@@ -21,7 +21,9 @@ from opentelemetry import _events as events
 from opentelemetry import _logs as logs
 from opentelemetry import metrics, trace
 from opentelemetry.exporter.cloud_logging import CloudLoggingExporter
-from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import OTLPMetricExporter
+from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import (
+    OTLPMetricExporter,
+)
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
     OTLPSpanExporter,
 )
@@ -51,7 +53,8 @@ def setup_opentelemetry() -> None:
 
     # Set up OTLP auth
     request = google.auth.transport.requests.Request()
-    auth_metadata_plugin = AuthMetadataPlugin(credentials=credentials, request=request)
+    auth_metadata_plugin = AuthMetadataPlugin(
+        credentials=credentials, request=request)
     channel_creds = grpc.composite_channel_credentials(
         grpc.ssl_channel_credentials(),
         grpc.metadata_call_credentials(auth_metadata_plugin),
@@ -88,7 +91,8 @@ def setup_opentelemetry() -> None:
     console_reader = PeriodicExportingMetricReader(
         ConsoleMetricExporter(), export_interval_millis=1000
     )
-    meter_provider = MeterProvider(metric_readers=[reader, console_reader], resource=resource)
+    meter_provider = MeterProvider(
+        metric_readers=[reader, console_reader], resource=resource)
     metrics.set_meter_provider(meter_provider)
 
     # Load instrumentors

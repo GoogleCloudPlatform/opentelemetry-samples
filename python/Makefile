@@ -27,13 +27,14 @@ $(VENV)/bin/activate:
 setup: $(VENV)/bin/activate
 	$(PIP) install -r otlpmetric/requirements.txt
 	$(PIP) install -r otlptrace/requirements.txt
+	$(PIP) install -r langgraph-sql-agent/requirements.txt
 	$(PIP) install flake8 autopep8
 
 lint: setup
-	$(FLAKE8) otlpmetric otlptrace
+	$(FLAKE8) --exclude=.venv otlpmetric otlptrace langgraph-sql-agent
 
 format: setup
-	$(AUTOPEP8) --in-place --recursive otlpmetric otlptrace
+	$(AUTOPEP8) --in-place --recursive otlpmetric otlptrace langgraph-sql-agent
 
 clean:
 	rm -rf $(VENV)

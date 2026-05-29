@@ -31,25 +31,32 @@ from utils import ask_prompt, console, print_markdown, render_messages
 
 SYSTEM_PROMPT = SystemMessage(
     content=f"""\
-You are a helpful AI assistant with a mastery of database design and querying. You have access
-to an ephemeral sqlite3 database that you can query and modify through some tools. Help answer
-questions and perform actions. Follow these rules:
+You are a helpful AI assistant with a mastery of database design and querying.
+You have access to an ephemeral sqlite3 database that you can query and modify
+through some tools. Help answer questions and perform actions. Follow these
+rules:
 
-- Make sure you always use sql_db_query_checker to validate SQL statements **before** running
-  them. In pseudocode: `checked_query = sql_db_query_checker(query);
-  sql_db_query(checked_query)`.
-- Be creative and don't ask for permission! The database is ephemeral so it's OK to make some mistakes.
-- The sqlite version is {sqlite3.sqlite_version} which supports multiple row inserts.
-- Always prefer to insert multiple rows in a single call to the sql_db_query tool, if possible.
-- You may request to execute multiple sql_db_query tool calls which will be run in parallel.
+- Make sure you always use sql_db_query_checker to validate SQL statements
+  **before** running them. In pseudocode:
+  `checked_query = sql_db_query_checker(query); sql_db_query(checked_query)`.
+- Be creative and don't ask for permission! The database is ephemeral so it's
+  OK to make some mistakes.
+- The sqlite version is {sqlite3.sqlite_version} which supports multiple row
+  inserts.
+- Always prefer to insert multiple rows in a single call to the
+  sql_db_query tool, if possible.
+- You may request to execute multiple sql_db_query tool calls which will be
+  run in parallel.
 
 If you make a mistake, try to recover."""
 )
 
 INTRO_TEXT = """\
-Starting agent using ephemeral SQLite DB {dbpath}. This demo allows you to chat with an Agent
-that has full access to an ephemeral SQLite database. The database is initially empty. It is
-built with the the LangGraph prebuilt **ReAct Agent** and the **SQLDatabaseToolkit**. Here are some samples you can try:
+Starting agent using ephemeral SQLite DB {dbpath}. This demo allows you to chat
+with an Agent that has full access to an ephemeral SQLite database. The
+database is initially empty. It is built with the the LangGraph prebuilt
+**ReAct Agent** and the **SQLDatabaseToolkit**. Here are some samples you can
+try:
 
 **Weather**
 - Create a new table to hold weather data.
@@ -61,7 +68,8 @@ built with the the LangGraph prebuilt **ReAct Agent** and the **SQLDatabaseToolk
 - Add 20 example rows please.
 - Create an owner table.
 - Link the two tables together, adding new columns, values, and rows as needed.
-- Write a query to join these tables and give the result of owners and their pets.
+- Write a query to join these tables and give the result of owners and their
+  pets.
 - Show me the query, then the output as a table
 
 ---
@@ -85,7 +93,8 @@ def run_agent(*, model_name: str, recursion_limit: int = 50) -> None:
     db = SQLDatabase(engine)
     toolkit = SQLDatabaseToolkit(db=db, llm=model)
     # Filter out sql_db_list_tables since it only lists the initial tables
-    tools = [tool for tool in toolkit.get_tools() if tool.name != "sql_db_list_tables"]
+    tools = [tool for tool in toolkit.get_tools() if tool.name !=
+             "sql_db_list_tables"]
 
     # Use the prebuilt ReAct agent graph
     # https://langchain-ai.github.io/langgraph/agents/agents/
