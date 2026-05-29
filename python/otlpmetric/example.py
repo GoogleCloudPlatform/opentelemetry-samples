@@ -23,13 +23,15 @@ from google.auth.transport.grpc import AuthMetadataPlugin
 from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import (
     OTLPMetricExporter,
 )
-from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
+from opentelemetry.resourcedetector.gcp_resource_detector import (
+    GoogleCloudResourceDetector,
+)
 from opentelemetry.sdk.resources import get_aggregated_resources
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
 
 """
-This is a sample script that exports OTLP metrics encoded as protobufs via gRPC. 
+Sample script exporting OTLP metrics encoded as protobufs via gRPC.
 """
 
 credentials, project_id = google.auth.default()
@@ -48,7 +50,7 @@ channel_creds = grpc.composite_channel_credentials(
 
 exporter = OTLPMetricExporter(credentials=channel_creds)
 reader = PeriodicExportingMetricReader(exporter)
-provider = MeterProvider(metric_readers=[reader],resource=resource)
+provider = MeterProvider(metric_readers=[reader], resource=resource)
 meter = provider.get_meter("gcp.otlp.sample")
 counter = meter.create_counter("sample.otlp.counter")
 
