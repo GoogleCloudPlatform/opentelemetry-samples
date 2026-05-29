@@ -1,0 +1,12 @@
+# Dependencies require for trace export samples
+opentelemetry-api==1.42.1
+opentelemetry-sdk==1.42.1
+# [START opentelemetry_otlp_grpc_auth_deps]
+# Google Auth Library
+google-auth==2.53.0
+# [END opentelemetry_otlp_grpc_auth_deps]
+opentelemetry-exporter-otlp-proto-http==1.42.1
+# [START opentelemetry_otlp_grpc_deps]
+opentelemetry-exporter-otlp-proto-grpc==1.42.1
+grpcio==1.80.0
+# [END opentelemetry_otlp_grpc_deps]
