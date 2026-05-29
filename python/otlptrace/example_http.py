@@ -41,6 +41,7 @@ tracer = trace.get_tracer("my.tracer.name")
 
 def do_work():
     with tracer.start_as_current_span("span-http") as span:
+        span.set_attribute("key", "value")
         # do some work that 'span' will track
         print("doing some work...")
         # When the 'with' block goes out of scope, 'span' is closed for you

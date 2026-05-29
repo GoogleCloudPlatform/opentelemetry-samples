@@ -33,7 +33,7 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
 """
-This is a sample script that exports OTLP traces encoded as protobufs via gRPC. 
+This is a sample script that exports OTLP traces encoded as protobufs via gRPC.
 """
 
 # [START opentelemetry_otlp_grpc_auth_setup]
@@ -41,7 +41,8 @@ credentials, _ = google.auth.default()
 request = google.auth.transport.requests.Request()
 resource = Resource.create(attributes={SERVICE_NAME: "otlp-gcp-grpc-sample"})
 
-auth_metadata_plugin = AuthMetadataPlugin(credentials=credentials, request=request)
+auth_metadata_plugin = AuthMetadataPlugin(
+    credentials=credentials, request=request)
 channel_creds = grpc.composite_channel_credentials(
     grpc.ssl_channel_credentials(),
     grpc.metadata_call_credentials(auth_metadata_plugin),
@@ -65,7 +66,7 @@ tracer = trace.get_tracer("my.tracer.name")
 
 
 def do_work():
-    with tracer.start_as_current_span("span-grpc") as span:
+    with tracer.start_as_current_span("span-grpc"):
         # do some work that 'span' will track
         print("doing some work...")
         # When the 'with' block goes out of scope, 'span' is closed for you
