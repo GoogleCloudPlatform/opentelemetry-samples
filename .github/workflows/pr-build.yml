@@ -39,3 +39,37 @@ jobs:
       run: |
         cd java/${{ matrix.sample }}
         ../gradlew build
+
+  go-samples-build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        sample: [metric/otlpgrpc]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.26.3'
+    - name: Build Go Sample
+      run: |
+        cd golang/${{ matrix.sample }}
+        go build -v ./...
+
+  go-lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        sample: [metric/otlpgrpc]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.3'
+      - name: Install golangci-lint
+        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+      - name: Run golangci-lint
+        run: |
+          cd golang/${{ matrix.sample }}
+          $(go env GOPATH)/bin/golangci-lint run

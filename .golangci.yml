@@ -1,0 +1,5 @@
+# Force the target Go version to 1.24 to avoid errors when running
+# golangci-lint (built with Go 1.24) on code targeting Go 1.26.
+# This is safe as long as the code does not use Go 1.26 specific features.
+run:
+  go: '1.24'
