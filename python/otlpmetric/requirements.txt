@@ -1,0 +1,7 @@
+# Dependencies required for otlpmetric sample
+opentelemetry-api==1.42.1
+opentelemetry-sdk==1.42.1
+google-auth==2.53.0
+opentelemetry-exporter-otlp-proto-grpc==1.42.1
+grpcio==1.80.0
+opentelemetry-resourcedetector-gcp==1.12.0a0
