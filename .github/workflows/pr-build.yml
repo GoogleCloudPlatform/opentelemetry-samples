@@ -100,7 +100,7 @@ jobs:
     strategy:
       matrix:
         sample: [otlpmetric]
-        py-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        py-version: ['3.10', '3.11', '3.12', '3.13']
     name: Build Python ${{ matrix.py-version }}
     steps:
     - uses: actions/checkout@v4
