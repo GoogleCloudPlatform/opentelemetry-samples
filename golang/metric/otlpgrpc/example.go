@@ -74,7 +74,7 @@ func main() {
 		}
 	}()
 
-	meter := meterProvider.Meter("github.com/GoogleCloudPlatform/opentelemetry-operations-go/example/metric/otlpgrpc")
+	meter := meterProvider.Meter("github.com/GoogleCloudPlatform/opentelemetry-samples/golang/metric/otlpgrpc")
 
 	// Register counter value
 	counter, err := meter.Int64Counter("counter-a")
