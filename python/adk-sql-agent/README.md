@@ -12,7 +12,7 @@ initially empty.
 
 Enable the relevant Cloud Observability APIs if they aren't already enabled.
 ```sh
-gcloud services enable aiplatform.googleapis.com telemetry.googleapis.com logging.googleapis.com monitoring.googleapis.com cloudtrace.googleapis.com
+gcloud services enable aiplatform.googleapis.com telemetry.googleapis.com logging.googleapis.com monitoring.googleapis.com
 ```
 
 This sample writes to Cloud Logging, Cloud Monitoring, and Cloud Trace. Grant yourself the
@@ -41,6 +41,7 @@ env $(cat opentelemetry.env | xargs) adk web --otel_to_cloud
 Alternatively if you have [`uv`](https://docs.astral.sh/uv/) installed:
 
 ```sh
+export GOOGLE_CLOUD_PROJECT="<your-project-id>"
 uv run --env-file opentelemetry.env adk web --otel_to_cloud
 ```
 

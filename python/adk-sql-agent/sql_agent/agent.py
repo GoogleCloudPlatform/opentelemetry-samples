@@ -67,7 +67,7 @@ the **SQLDatabaseToolkit**. Here are some samples you can try:
 
 root_agent = Agent(
     name="weather_time_agent",
-    model="gemini-2.0-flash",
+    model="gemini-3.5-flash",
     description=DESCRIPTION,
     instruction=SYSTEM_PROMPT,
     tools=[run_sql_tool, create_database_tool],
