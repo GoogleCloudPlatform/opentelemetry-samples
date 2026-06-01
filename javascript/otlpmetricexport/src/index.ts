@@ -39,17 +39,19 @@ async function main() {
   const authenticatedClient: AuthClient = await getAuthenticatedClient();
 
   const sdk = new opentelemetry.NodeSDK({
-    metricReader: new PeriodicExportingMetricReader({
-      // Export metrics every 10 seconds. 5 seconds is the smallest sample period allowed by
-      // Cloud Monitoring.
-      exportIntervalMillis: 10_000,
-      exporter: new OTLPMetricExporter({
-        credentials: credentials.combineChannelCredentials(
-          credentials.createSsl(),
-          credentials.createFromGoogleCredential(authenticatedClient),
-        ),
+    metricReaders: [
+      new PeriodicExportingMetricReader({
+        // Export metrics every 10 seconds. 5 seconds is the smallest sample period allowed by
+        // Cloud Monitoring.
+        exportIntervalMillis: 10_000,
+        exporter: new OTLPMetricExporter({
+          credentials: credentials.combineChannelCredentials(
+            credentials.createSsl(),
+            credentials.createFromGoogleCredential(authenticatedClient),
+          ),
+        }),
       }),
-    }),
+    ],
     resourceDetectors: getResourceDetectorsFromEnv(),
   });
   sdk.start();
