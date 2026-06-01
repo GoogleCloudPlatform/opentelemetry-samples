@@ -1,6 +1,6 @@
 # OpenTelemetry ADK instrumentation example
 
-<!-- TODO: link to devsite doc once it is published -->
+See: https://docs.cloud.google.com/stackdriver/docs/instrumentation/ai-agent-adk
 
 This sample is an ADK agent instrumented with OpenTelemetry to send traces and logs with GenAI
 prompts and responses, and metrics to Google Cloud Observability.
@@ -26,8 +26,8 @@ following roles to run the example:
 The sample can easily be run in Cloud Shell. You can also use
 [Application Default Credentials][ADC] locally. Clone and set environment variables:
 ```sh
-git clone https://github.com/GoogleCloudPlatform/opentelemetry-operations-python.git
-cd opentelemetry-operations-python/samples/adk-sql-agent
+git clone https://github.com/GoogleCloudPlatform/opentelemetry-samples.git
+cd opentelemetry-samples/python/adk-sql-agent
 ```
 
 Configure the environment and run the sample:
