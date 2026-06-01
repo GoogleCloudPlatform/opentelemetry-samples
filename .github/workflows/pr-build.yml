@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sample: [otlpmetric, otlptrace]
+        sample: [otlpmetric, otlptrace, adk-sql-agent]
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python
@@ -99,7 +99,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sample: [otlpmetric, otlptrace]
+        sample: [otlpmetric, otlptrace, adk-sql-agent]
         py-version: ['3.10', '3.11', '3.12', '3.13']
     name: Build Python ${{ matrix.py-version }}
     steps:
