@@ -21,12 +21,14 @@ import google.auth.transport.grpc
 import google.auth.transport.requests
 import grpc
 from google.auth.transport.grpc import AuthMetadataPlugin
+
 # [END opentelemetry_otlp_grpc_auth_imports]
 # [START opentelemetry_otlp_grpc_imports]
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
     OTLPSpanExporter,
 )
+
 # [END opentelemetry_otlp_grpc_imports]
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
@@ -41,8 +43,7 @@ credentials, _ = google.auth.default()
 request = google.auth.transport.requests.Request()
 resource = Resource.create(attributes={SERVICE_NAME: "otlp-gcp-grpc-sample"})
 
-auth_metadata_plugin = AuthMetadataPlugin(
-    credentials=credentials, request=request)
+auth_metadata_plugin = AuthMetadataPlugin(credentials=credentials, request=request)
 channel_creds = grpc.composite_channel_credentials(
     grpc.ssl_channel_credentials(),
     grpc.metadata_call_credentials(auth_metadata_plugin),

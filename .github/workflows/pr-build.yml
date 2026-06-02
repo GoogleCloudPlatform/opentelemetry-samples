@@ -89,11 +89,15 @@ jobs:
       run: |
         cd python/${{ matrix.sample }}
         pip install -r requirements.txt
-        pip install flake8
-    - name: Run flake8
+        pip install ruff
+    - name: Run ruff check
       run: |
         cd python/${{ matrix.sample }}
-        flake8 .
+        ruff check .
+    - name: Run ruff format check
+      run: |
+        cd python/${{ matrix.sample }}
+        ruff format --check .
 
   python-samples-build:
     runs-on: ubuntu-latest

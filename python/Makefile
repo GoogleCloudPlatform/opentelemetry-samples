@@ -14,8 +14,7 @@
 
 VENV = .venv
 PIP = $(VENV)/bin/pip
-FLAKE8 = $(VENV)/bin/flake8
-AUTOPEP8 = $(VENV)/bin/autopep8
+RUFF = $(VENV)/bin/ruff
 
 export PIP_EXTRA_INDEX_URL=https://pypi.org/simple
 
@@ -30,13 +29,13 @@ setup: $(VENV)/bin/activate
 	$(PIP) install -r otlpmetric/requirements.txt
 	$(PIP) install -r otlptrace/requirements.txt
 	$(PIP) install -r adk-sql-agent/requirements.txt
-	$(PIP) install flake8 autopep8
+	$(PIP) install ruff
 
 lint: setup
-	$(FLAKE8) otlpmetric otlptrace adk-sql-agent
+	$(RUFF) check otlpmetric otlptrace adk-sql-agent
 
 format: setup
-	$(AUTOPEP8) --in-place --recursive otlpmetric otlptrace adk-sql-agent
+	$(RUFF) format otlpmetric otlptrace adk-sql-agent
 
 clean:
 	rm -rf $(VENV)
