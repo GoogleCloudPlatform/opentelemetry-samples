@@ -115,4 +115,4 @@ jobs:
     - name: Verify build (Syntax check)
       run: |
         cd python/${{ matrix.sample }}
-        python -m py_compile *.py
+        python -m compileall .
