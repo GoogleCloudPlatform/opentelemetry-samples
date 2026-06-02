@@ -84,7 +84,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
     - name: Install dependencies
       run: |
         cd python/${{ matrix.sample }}
@@ -100,8 +100,8 @@ jobs:
     strategy:
       matrix:
         sample: [otlpmetric, otlptrace, adk-sql-agent]
-        py-version: ['3.10', '3.11', '3.12', '3.13']
-    name: Build Python ${{ matrix.py-version }}
+        py-version: ['3.11', '3.12', '3.13']
+    name: python-samples-build (${{ matrix.sample }}, ${{matrix.py-version}})
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.py-version }}
