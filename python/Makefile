@@ -33,6 +33,7 @@ setup: $(VENV)/bin/activate
 
 lint: setup
 	$(RUFF) check otlpmetric otlptrace adk-sql-agent
+	$(RUFF) format --check otlpmetric otlptrace adk-sql-agent
 
 format: setup
 	$(RUFF) format otlpmetric otlptrace adk-sql-agent
