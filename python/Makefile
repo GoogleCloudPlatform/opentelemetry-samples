@@ -17,11 +17,11 @@
 all: lint
 
 lint:
-	uv run ruff check otlpmetric otlptrace adk-sql-agent
-	uv run ruff format --check otlpmetric otlptrace adk-sql-agent
+	uv run ruff check .
+	uv run ruff format --check .
 
 format:
-	uv run ruff format otlpmetric otlptrace adk-sql-agent
+	uv run ruff format .
 
 clean:
 	rm -rf .venv .ruff_cache
