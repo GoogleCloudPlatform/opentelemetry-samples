@@ -95,7 +95,7 @@ def setup_opentelemetry() -> None:
 # in order to full prompts and responses and logs messages.
 setup_opentelemetry()
 run_agent(
-    model_name="gemini-2.0-flash",
+    model_name="gemini-3.5-flash",
     # You can increase this, but it may incur more token usage
     # https://langchain-ai.github.io/langgraph/troubleshooting/errors/GRAPH_RECURSION_LIMIT/#troubleshooting
     recursion_limit=50,

@@ -28,9 +28,12 @@ following roles to run the example:
 The sample can easily be run in Cloud Shell. You can also use
 [Application Default Credentials][ADC] locally. Clone and set environment variables:
 ```sh
-git clone https://github.com/GoogleCloudPlatform/opentelemetry-operations-python.git
-cd opentelemetry-operations-python/samples/langgraph-sql-agent
+git clone https://github.com/GoogleCloudPlatform/opentelemetry-samples.git
+cd opentelemetry-samples/python/langgraph-sql-agent
 
+# Set the GCP region. This allows langchain_google_genai integration to locate the model.
+# https://reference.langchain.com/python/langchain-google-genai/embeddings/GoogleGenerativeAIEmbeddings/location
+export GOOGLE_CLOUD_REGION=global
 # Capture GenAI prompts and responses
 export OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=true
 # Capture application logs automatically
