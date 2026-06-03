@@ -102,7 +102,7 @@ jsonpatch==1.33
     # via langchain-core
 jsonpointer==3.1.1
     # via jsonpatch
-langchain-classic==1.0.4
+langchain-classic==1.0.7
     # via langchain-community
 langchain-community==0.4.1
     # via langgraph-sql-agent (pyproject.toml)
