@@ -20,12 +20,14 @@ from opentelemetry import _events as events
 from opentelemetry import _logs as logs
 from opentelemetry import metrics, trace
 from opentelemetry.exporter.cloud_logging import CloudLoggingExporter
-from opentelemetry.exporter.cloud_monitoring import CloudMonitoringMetricsExporter
+from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import (
+    OTLPMetricExporter,
+)
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
     OTLPSpanExporter,
 )
 from opentelemetry.instrumentation.sqlite3 import SQLite3Instrumentor
-from opentelemetry.instrumentation.vertexai import VertexAIInstrumentor
+from opentelemetry.instrumentation.google_genai import GoogleGenAiSdkInstrumentor
 from opentelemetry.sdk._events import EventLoggerProvider
 from opentelemetry.sdk._logs import LoggerProvider
 from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
@@ -46,6 +48,11 @@ def setup_opentelemetry() -> None:
             SERVICE_NAME: "langgraph-sql-agent",
             # The project to send spans to
             "gcp.project_id": project_id,
+            "gcp.resource_type": "prometheus_target",
+            "location": "us-central1",
+            "namespace": "local",
+            "job": "langgraph-sql-agent",
+            "instance": "local-instance",
         }
     )
 
@@ -78,13 +85,18 @@ def setup_opentelemetry() -> None:
     event_logger_provider = EventLoggerProvider(logger_provider)
     events.set_event_logger_provider(event_logger_provider)
 
-    reader = PeriodicExportingMetricReader(CloudMonitoringMetricsExporter())
+    reader = PeriodicExportingMetricReader(
+        OTLPMetricExporter(
+            credentials=channel_creds,
+            endpoint="https://telemetry.googleapis.com:443/v1/metrics",
+        )
+    )
     meter_provider = MeterProvider(metric_readers=[reader], resource=resource)
     metrics.set_meter_provider(meter_provider)
 
     # Load instrumentors
     SQLite3Instrumentor().instrument()
-    VertexAIInstrumentor().instrument()
+    GoogleGenAiSdkInstrumentor().instrument()
 
 
 # [END opentelemetry_langgraph_otel_setup]
