@@ -17,7 +17,7 @@ name = "adk-sql-agent"
 version = "0.1.0"
 description = "An ADK agent that can run queries on an ephemeral SQLite database"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
     "google-adk>=2.1.0",
     "opentelemetry-exporter-gcp-logging>=1.9.0a0",
