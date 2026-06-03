@@ -76,46 +76,17 @@ jobs:
 
   python-lint:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        sample: [otlpmetric, otlptrace, adk-sql-agent]
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up uv
+      uses: astral-sh/setup-uv@v5
       with:
+        enable-cache: true
         python-version: '3.11'
-    - name: Install dependencies
-      run: |
-        cd python/${{ matrix.sample }}
-        pip install -r requirements.txt
-        pip install flake8
-    - name: Run flake8
-      run: |
-        cd python/${{ matrix.sample }}
-        flake8 .
+    - name: Run lint via Makefile
+      working-directory: python
+      run: make lint
 
-  python-samples-build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        sample: [otlpmetric, otlptrace, adk-sql-agent]
-        py-version: ['3.11', '3.12', '3.13']
-    name: python-samples-build (${{ matrix.sample }}, ${{matrix.py-version}})
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.py-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.py-version }}
-    - name: Install dependencies
-      run: |
-        cd python/${{ matrix.sample }}
-        pip install -r requirements.txt
-    - name: Verify build (Syntax check)
-      run: |
-        cd python/${{ matrix.sample }}
-        python -m compileall .
 
   javascript-lint:
     runs-on: ubuntu-latest

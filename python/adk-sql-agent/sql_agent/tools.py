@@ -64,15 +64,13 @@ def run_sql_tool(sql_query: str, tool_context: ToolContext) -> dict[str, Any]:
             # Check if the query is one that would return rows (e.g., SELECT)
             if cursor.description is not None:
                 fetched_rows: list[tuple[Any, ...]] = cursor.fetchall()
-                rows_list = [tuple(str(col) for col in row)
-                             for row in fetched_rows]
+                rows_list = [tuple(str(col) for col in row) for row in fetched_rows]
                 logger.info("Query returned %s rows", len(rows_list))
             else:
                 # For DDL/DML (like INSERT, UPDATE, DELETE without RETURNING
                 # clause) cursor.description is None.
                 # rowcount shows number of affected rows for DML.
-                logger.info("Query affected %s rows (DDL/DML)",
-                            cursor.rowcount)
+                logger.info("Query affected %s rows (DDL/DML)", cursor.rowcount)
 
             # DML statements (INSERT, UPDATE, DELETE) require a commit.
             # DDL statements are often autocommitted by SQLite, but an explicit

@@ -36,13 +36,9 @@ Sample script exporting OTLP metrics encoded as protobufs via gRPC.
 
 credentials, project_id = google.auth.default()
 request = google.auth.transport.requests.Request()
-resource = get_aggregated_resources(
-    [GoogleCloudResourceDetector(raise_on_error=True)]
-)
+resource = get_aggregated_resources([GoogleCloudResourceDetector(raise_on_error=True)])
 
-auth_metadata_plugin = AuthMetadataPlugin(
-    credentials=credentials, request=request
-)
+auth_metadata_plugin = AuthMetadataPlugin(credentials=credentials, request=request)
 channel_creds = grpc.composite_channel_credentials(
     grpc.ssl_channel_credentials(),
     grpc.metadata_call_credentials(auth_metadata_plugin),
