@@ -78,9 +78,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up uv
+      uses: astral-sh/setup-uv@v5
       with:
+        enable-cache: true
         python-version: '3.11'
     - name: Run lint via Makefile
       run: |
@@ -96,18 +97,20 @@ jobs:
     name: python-samples-build (${{ matrix.sample }}, ${{matrix.py-version}})
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.py-version }}
-      uses: actions/setup-python@v5
+    - name: Set up uv
+      uses: astral-sh/setup-uv@v5
       with:
+        enable-cache: true
         python-version: ${{ matrix.py-version }}
     - name: Install dependencies
       run: |
         cd python/${{ matrix.sample }}
-        pip install -r requirements.txt
+        uv venv
+        uv pip install -r requirements.txt
     - name: Verify build (Syntax check)
       run: |
         cd python/${{ matrix.sample }}
-        python -m compileall .
+        uv run python -m compileall .
 
   javascript-lint:
     runs-on: ubuntu-latest
