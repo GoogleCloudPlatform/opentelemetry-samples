@@ -33,9 +33,19 @@ from opentelemetry.sdk._logs import LoggerProvider
 from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
-from opentelemetry.sdk.resources import SERVICE_NAME, Resource
+from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.semconv.attributes.service_attributes import (
+    SERVICE_INSTANCE_ID,
+    SERVICE_NAME,
+    SERVICE_NAMESPACE,
+)
+from opentelemetry.semconv._incubating.attributes.cloud_attributes import (
+    CLOUD_ACCOUNT_ID,
+    CLOUD_PROVIDER,
+    CLOUD_REGION,
+)
 
 from agent import run_agent
 
@@ -46,13 +56,13 @@ def setup_opentelemetry() -> None:
     resource = Resource.create(
         attributes={
             SERVICE_NAME: "langgraph-sql-agent",
+            CLOUD_PROVIDER: "gcp",
+            CLOUD_ACCOUNT_ID: project_id,
             # The project to send spans to
             "gcp.project_id": project_id,
-            "gcp.resource_type": "prometheus_target",
-            "location": "us-central1",
-            "namespace": "local",
-            "job": "langgraph-sql-agent",
-            "instance": "local-instance",
+            CLOUD_REGION: "us-central1",
+            SERVICE_NAMESPACE: "local",
+            SERVICE_INSTANCE_ID: "local-instance",
         }
     )
 
