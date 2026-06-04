@@ -16,7 +16,6 @@ import google.auth
 import google.auth.transport.requests
 import grpc
 from google.auth.transport.grpc import AuthMetadataPlugin
-from opentelemetry import _events as events
 from opentelemetry import _logs as logs
 from opentelemetry import metrics, trace
 from opentelemetry.exporter.cloud_logging import CloudLoggingExporter
@@ -28,7 +27,6 @@ from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
 )
 from opentelemetry.instrumentation.sqlite3 import SQLite3Instrumentor
 from opentelemetry.instrumentation.google_genai import GoogleGenAiSdkInstrumentor
-from opentelemetry.sdk._events import EventLoggerProvider
 from opentelemetry.sdk._logs import LoggerProvider
 from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
 from opentelemetry.sdk.metrics import MeterProvider
@@ -91,9 +89,6 @@ def setup_opentelemetry() -> None:
         BatchLogRecordProcessor(CloudLoggingExporter())
     )
     logs.set_logger_provider(logger_provider)
-
-    event_logger_provider = EventLoggerProvider(logger_provider)
-    events.set_event_logger_provider(event_logger_provider)
 
     reader = PeriodicExportingMetricReader(
         OTLPMetricExporter(
