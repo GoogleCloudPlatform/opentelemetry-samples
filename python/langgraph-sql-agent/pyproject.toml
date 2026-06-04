@@ -20,14 +20,13 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "langchain-community>=0.3.16",
-    "langchain-google-vertexai>=2.0.27",
+    "langchain-google-genai>=2.0.1",
     "langgraph>=0.5.1",
     "opentelemetry-exporter-gcp-logging>=1.9.0a0",
-    "opentelemetry-exporter-gcp-monitoring>=1.9.0a0",
     "opentelemetry-exporter-otlp-proto-grpc>=1.33.0",
     "opentelemetry-instrumentation-httpx>=0.54b0",
     "opentelemetry-instrumentation-requests>=0.54b0",
     "opentelemetry-instrumentation-sqlite3>=0.54b0",
-    "opentelemetry-instrumentation-vertexai>=2.0b0",
+    "opentelemetry-instrumentation-google-genai>=0.4b0",
     "rich>=14.0.0",
 ]
