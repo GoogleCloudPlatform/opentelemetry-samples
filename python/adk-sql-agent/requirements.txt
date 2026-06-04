@@ -47,7 +47,6 @@ google-api-core==2.30.3
     #   google-cloud-appengine-logging
     #   google-cloud-core
     #   google-cloud-logging
-    #   google-cloud-monitoring
 google-auth==2.53.0
     # via
     #   google-adk
@@ -55,7 +54,6 @@ google-auth==2.53.0
     #   google-cloud-appengine-logging
     #   google-cloud-core
     #   google-cloud-logging
-    #   google-cloud-monitoring
     #   google-genai
 google-cloud-appengine-logging==1.9.0
     # via google-cloud-logging
@@ -65,8 +63,6 @@ google-cloud-core==2.6.0
     # via google-cloud-logging
 google-cloud-logging==3.15.0
     # via opentelemetry-exporter-gcp-logging
-google-cloud-monitoring==2.30.0
-    # via opentelemetry-exporter-gcp-monitoring
 google-genai==1.75.0
     # via google-adk
 googleapis-common-protos==1.75.0
@@ -86,7 +82,6 @@ grpcio==1.81.0
     #   google-api-core
     #   google-cloud-appengine-logging
     #   google-cloud-logging
-    #   google-cloud-monitoring
     #   googleapis-common-protos
     #   grpc-google-iam-v1
     #   grpcio-status
@@ -121,7 +116,6 @@ opentelemetry-api==1.41.1
     #   google-adk
     #   google-cloud-logging
     #   opentelemetry-exporter-gcp-logging
-    #   opentelemetry-exporter-gcp-monitoring
     #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-instrumentation
@@ -134,8 +128,6 @@ opentelemetry-api==1.41.1
     #   opentelemetry-semantic-conventions
     #   opentelemetry-util-genai
 opentelemetry-exporter-gcp-logging==1.12.0a0
-    # via adk-sql-agent (pyproject.toml)
-opentelemetry-exporter-gcp-monitoring==1.12.0a0
     # via adk-sql-agent (pyproject.toml)
 opentelemetry-exporter-otlp-proto-common==1.41.1
     # via
@@ -166,14 +158,11 @@ opentelemetry-proto==1.41.1
     #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
 opentelemetry-resourcedetector-gcp==1.12.0a0
-    # via
-    #   opentelemetry-exporter-gcp-logging
-    #   opentelemetry-exporter-gcp-monitoring
+    # via opentelemetry-exporter-gcp-logging
 opentelemetry-sdk==1.41.1
     # via
     #   google-adk
     #   opentelemetry-exporter-gcp-logging
-    #   opentelemetry-exporter-gcp-monitoring
     #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-resourcedetector-gcp
@@ -196,14 +185,12 @@ proto-plus==1.28.0
     #   google-api-core
     #   google-cloud-appengine-logging
     #   google-cloud-logging
-    #   google-cloud-monitoring
 protobuf==6.33.6
     # via
     #   google-api-core
     #   google-cloud-appengine-logging
     #   google-cloud-audit-log
     #   google-cloud-logging
-    #   google-cloud-monitoring
     #   googleapis-common-protos
     #   grpc-google-iam-v1
     #   grpcio-status
