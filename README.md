@@ -24,7 +24,11 @@ This project provides practical examples across multiple programming languages t
   - **[metric/otlpgrpc](./golang/metric/otlpgrpc)**: Example for OTLP Metric exporter via gRPC.
   - **[trace/otlpgrpc](./golang/trace/otlpgrpc)**: Example showing OTLP exporter being used for traces export to GCP via gRPC.
   - **[trace/otlphttp](./golang/trace/otlphttp)**: Example showing OTLP exporter being used for traces export to GCP via HTTP.
-- **[javascript](./javascript)**: JavaScript samples (coming soon).
+- **[javascript](./javascript)**: JavaScript samples.
+  - **[otlpmetricexport](./javascript/otlpmetricexport)**: Example showing OTLP Metric exporter via gRPC.
+  - **[otlptraceexport](./javascript/otlptraceexport)**: Example showing OTLP exporter being used for traces export to GCP using gRPC or HTTP.
 - **[python](./python)**: Python samples.
+  - **[adk-sql-agent](./python/adk-sql-agent)**: Example showing ADK SQL Agent sample instrumented with OpenTelemetry.
+  - **[langgraph-sql-agent](./python/langgraph-sql-agent)**: Example showing LangGraph SQL Agent sample instrumented with OpenTelemetry.
   - **[otlpmetric](./python/otlpmetric)**: Example for OTLP Metric exporter.
   - **[otlptrace](./python/otlptrace)**: Example showing OTLP exporter being used for traces export to GCP.
