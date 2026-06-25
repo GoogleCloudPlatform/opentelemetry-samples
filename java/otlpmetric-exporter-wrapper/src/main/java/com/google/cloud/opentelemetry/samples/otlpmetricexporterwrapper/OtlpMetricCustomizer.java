@@ -29,7 +29,7 @@ public class OtlpMetricCustomizer implements AutoConfigurationCustomizerProvider
     autoConfigurationCustomizer.addMetricExporterCustomizer(
         (metricExporter, configProperties) -> {
           if (metricExporter.getClass().getName().contains("Otlp")) {
-            return new PrefixedMetricExporter(metricExporter, "custom_prefix_");
+            return new PrefixedMetricExporter(metricExporter, "workload.googleapis.com/");
           }
           return metricExporter;
         });

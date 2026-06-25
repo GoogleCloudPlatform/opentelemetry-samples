@@ -2,7 +2,7 @@
 
 This example demonstrates how to export OTLP metrics to Google Cloud Platform (GCP) and shows how you can wrap existing configured OTLP Metric exporters in a custom Metric exporter that attaches a prefix to all exported metric names. 
 
-It leverages the OpenTelemetry Auto-Configuration SPI (`AutoConfigurationCustomizerProvider`) to intercept the default OTLP exporter and wrap it with a `PrefixedMetricExporter`, which prepends `custom_prefix_` to all metric names.
+It leverages the OpenTelemetry Auto-Configuration SPI (`AutoConfigurationCustomizerProvider`) to intercept the default OTLP exporter and wrap it with a `PrefixedMetricExporter`, which prepends a custom prefix to all metric names.
 
 ## Setup
 
