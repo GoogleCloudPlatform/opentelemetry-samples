@@ -40,7 +40,7 @@ dependencies {
 
 def autoconf_config = [
 	'-Dotel.exporter.otlp.endpoint=https://telemetry.googleapis.com',
-	'-Dotel.resource.attributes=gcp.project_id=<YOUR_PROJECT_ID>',
+	'-Dgoogle.cloud.project=<YOUR_PROJECT_ID>',
 	'-Dotel.metrics.exporter=otlp',
 	'-Dotel.logs.exporter=none',
 	'-Dotel.traces.exporter=none',

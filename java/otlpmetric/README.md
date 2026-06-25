@@ -14,7 +14,7 @@ Executing this command will save your application credentials to default path wh
 Next, update [`build.gradle`](build.grade) to set the following:
 
 ```
-	'-Dotel.resource.attributes=gcp.project_id=<YOUR_PROJECT_ID>,
+	'-Dgoogle.cloud-project=<YOUR_PROJECT_ID>,
 	# Optional - if you want to export using gRPC protocol
 	'-Dotel.exporter.otlp.protocol=grpc',
 ```
