@@ -1,0 +1,67 @@
+/*
+ * Copyright 2024 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.7.18'
+	id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+description = 'OpenTelemetry instrumentation quickstart using Spring Boot'
+
+repositories {
+	mavenCentral()
+}
+
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	// Use log4j2 for logging
+	// https://docs.spring.io/spring-boot/docs/2.7.18/reference/html/howto.html#howto.logging.log4j
+	implementation "org.springframework.boot:spring-boot-starter-log4j2"
+	modules {
+		module("org.springframework.boot:spring-boot-starter-logging") {
+			replacedBy("org.springframework.boot:spring-boot-starter-log4j2", "Use Log4j2 instead of Logback")
+		}
+	}
+	implementation "org.apache.logging.log4j:log4j-layout-template-json"
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.testcontainers:testcontainers:1.19.4'
+	testImplementation 'com.google.truth:truth:1.4.0'
+	testImplementation "org.testcontainers:junit-jupiter:1.19.4"
+}
+
+tasks.named('test') {
+	useJUnitPlatform {
+		// Individual integration tests are annotated with @Tag('integrationTest')
+		excludeTags 'integrationTest'
+	}
+}
+
+tasks.register("integrationTest", Test) {
+	useJUnitPlatform {
+		includeTags 'integrationTest'
+	}
+
+	// Passing -DcomposeOverrideFile=foo.yaml will merge docker-compose.yaml with foo.yaml.
+	// This is used to set overrides for Cloud Build.
+	if (System.getProperty('composeOverrideFile')) {
+		systemProperty 'composeOverrideFile', System.getProperty('composeOverrideFile')
+	}
+}
