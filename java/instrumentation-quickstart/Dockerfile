@@ -15,7 +15,7 @@ FROM eclipse-temurin:17-jdk-alpine
 VOLUME /tmp
 COPY build/libs/*-SNAPSHOT.jar app.jar
 # [START opentelemetry_instrumentation_agent_dockerfile]
-RUN wget -O /opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.31.0/opentelemetry-javaagent.jar
+RUN wget -O /opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v2.29.0/opentelemetry-javaagent.jar
 CMD sh -c "java -javaagent:/opentelemetry-javaagent.jar -jar app.jar \
 	2>&1 | tee /var/log/app.log"
 # [END opentelemetry_instrumentation_agent_dockerfile]
