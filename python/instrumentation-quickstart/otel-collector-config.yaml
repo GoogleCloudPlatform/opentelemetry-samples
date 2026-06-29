@@ -183,6 +183,6 @@ service:
       processors: ["batch", "resourcedetection", "resource/gcp_project_id", "resource"]
       exporters: ["otlphttp"]
     logs:
-      receivers: ["filelog"]
+      receivers: ["otlp", "filelog"]
       processors: ["batch", "resourcedetection", "resource/gcp_project_id"]
       exporters: ["otlphttp"]
