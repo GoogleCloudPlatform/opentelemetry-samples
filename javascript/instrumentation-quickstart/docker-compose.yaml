@@ -17,6 +17,7 @@ version: '3'
 services:
   app:
     build: .
+    image: instrumentation-quickstart-js-app
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otelcol:4318
       - OTEL_LOGS_EXPORTER=none
