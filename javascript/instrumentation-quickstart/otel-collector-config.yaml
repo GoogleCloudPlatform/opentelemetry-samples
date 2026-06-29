@@ -1,0 +1,191 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+receivers:
+  # Receive OTLP from our application
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+
+  # Use the filelog receiver to read the application's logs from its log file.
+  # This config reads JSON logs in same format that the Cloud Logging agents
+  # support:
+  # https://cloud.google.com/logging/docs/structured-logging#special-payload-fields
+  filelog:
+    start_at: beginning
+    include:
+      - "/var/log/app.log"
+    operators:
+      - type: router
+        id: log_router
+        routes:
+          - expr: 'body matches "^\\{"'
+            output: json_parser
+        default: bypass_non_json
+
+      - type: add
+        id: bypass_non_json
+        field: attributes.is_json
+        value: false
+        output: end_of_pipeline
+
+      - type: json_parser
+        id: json_parser
+        parse_to: body
+        timestamp:
+          parse_from: body.timestamp
+          layout: '%Y-%m-%dT%H:%M:%S.%fZ'
+        severity:
+          parse_from: body.severity
+          preset: none
+          mapping:
+            debug: debug
+            info: info
+            info3: notice
+            warn: warning
+            error: error
+            fatal: critical
+            fatal3: alert
+            fatal4: emergency
+        output: check_trace_context
+
+      # Check if the parsed JSON actually contains trace context before extracting
+      - type: router
+        id: check_trace_context
+        routes:
+          - expr: 'body["logging.googleapis.com/trace"] != nil'
+            output: add_trace_flags
+        default: end_of_pipeline
+
+      # set trace_flags to SAMPLED if GCP attribute is set to true
+      - type: add
+        id: add_trace_flags
+        field: body.trace_flags
+        value: "01"
+        if: body["logging.googleapis.com/trace_sampled"] == true
+        output: regex_parser
+
+      # parse the trace context fields from GCP attributes
+      - type: regex_parser
+        id: regex_parser
+        parse_from: body["logging.googleapis.com/trace"]
+        parse_to: body
+        regex: (?P<trace_id>.*)
+        trace:
+          span_id:
+            parse_from: body["logging.googleapis.com/spanId"]
+        output: remove_timestamp
+
+      # Remove fields that are redundant from translation above and already
+      # included in OTel LogEntry message
+      - type: remove
+        id: remove_timestamp
+        field: body.timestamp
+
+      - type: remove
+        id: remove_trace_id
+        field: body.trace_id
+
+      - type: remove
+        id: remove_trace_flags
+        field: body.trace_flags
+
+      - type: remove
+        id: remove_severity
+        field: body.severity
+
+      - type: remove
+        id: remove_gcp_trace
+        field: body["logging.googleapis.com/trace"]
+
+      - type: remove
+        id: remove_gcp_spanid
+        field: body["logging.googleapis.com/spanId"]
+
+      - type: remove
+        id: remove_gcp_trace_sampled
+        field: body["logging.googleapis.com/trace_sampled"]
+
+      - type: add
+        id: end_of_pipeline
+        field: attributes.processed_by_collector
+        value: true
+
+exporters:
+  # Export logs using the standard googlecloud exporter
+  googlecloud:
+    project: ${GOOGLE_CLOUD_PROJECT}
+    log:
+      default_log_name: "opentelemetry.io/collector-exported-log"
+  # Export telemetry using standard OTLP HTTP exporter to Google Cloud
+  otlphttp:
+    encoding: proto
+    endpoint: https://telemetry.googleapis.com
+    # Use the googleclientauth extension to authenticate with Google credentials
+    auth:
+      authenticator: googleclientauth
+
+extensions:
+  googleclientauth:
+    project: ${GOOGLE_CLOUD_PROJECT}
+    quota_project: ${GOOGLE_CLOUD_PROJECT}
+
+processors:
+  # Batch telemetry together to more efficiently send to GCP
+  batch:
+    send_batch_max_size: 500
+    send_batch_size: 500
+    timeout: 1s
+  # Make sure Google Managed service for Prometheus required labels are set
+  resource:
+    attributes:
+      - { key: "location", value: "us-central1", action: "upsert" }
+      - { key: "cluster", value: "no-cluster", action: "upsert" }
+      - { key: "namespace", value: "no-namespace", action: "upsert" }
+      - { key: "job", value: "us-job", action: "upsert" }
+      - { key: "instance", value: "us-instance", action: "upsert" }
+  # If running on GCP (e.g. on GKE), detect resource attributes from the environment.
+  resourcedetection:
+    detectors: ["env", "gcp"]
+  resource/gcp_project_id:
+    attributes:
+    - key: gcp.project_id
+      value: ${GOOGLE_CLOUD_PROJECT}
+      action: insert
+
+service:
+  extensions: [googleclientauth]
+  telemetry:
+    metrics:
+      readers:
+        - pull:
+            exporter:
+              prometheus:
+                host: '0.0.0.0'
+                port: 8888
+                without_type_suffix: true
+  pipelines:
+    traces:
+      receivers: ["otlp"]
+      processors: ["batch", "resourcedetection", "resource/gcp_project_id"]
+      exporters: ["otlphttp"]
+    metrics:
+      receivers: ["otlp"]
+      processors: ["batch", "resourcedetection", "resource/gcp_project_id"]
+      exporters: ["otlphttp"]
+    logs:
+      receivers: ["filelog"]
+      processors: ["batch", "resourcedetection"]
+      exporters: ["googlecloud"]
