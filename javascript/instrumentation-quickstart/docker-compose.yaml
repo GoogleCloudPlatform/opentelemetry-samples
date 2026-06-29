@@ -19,6 +19,7 @@ services:
     build: .
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otelcol:4318
+      - OTEL_LOGS_EXPORTER=none
       - OTEL_SERVICE_NAME=otel-quickstart-fastify
       - OTEL_METRIC_EXPORT_INTERVAL=5000
       - GOOGLE_CLOUD_PROJECT
