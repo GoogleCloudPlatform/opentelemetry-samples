@@ -152,7 +152,8 @@ processors:
       - { key: "cluster", value: "no-cluster", action: "upsert" }
       - { key: "namespace", value: "no-namespace", action: "upsert" }
       - { key: "job", value: "us-job", action: "upsert" }
-      - { key: "instance", value: "us-instance", action: "upsert" }
+      - { key: "instance", from_attribute: "service.instance.id", action: "upsert" }
+      - { key: "instance", value: "us-instance", action: "insert" }
   # If running on GCP (e.g. on GKE), detect resource attributes from the environment.
   resourcedetection:
     detectors: ["env", "gcp"]
