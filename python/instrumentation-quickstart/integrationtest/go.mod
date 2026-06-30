@@ -2,7 +2,7 @@ module integrationtest
 
 go 1.24.9
 
-require github.com/GoogleCloudPlatform/opentelemetry-operations-e2e-testing/quickstarttest v0.0.0-20251208180208-d58ab0851963
+require github.com/GoogleCloudPlatform/opentelemetry-operations-e2e-testing/quickstarttest v0.0.0-20260630152504-4892b63198e9
 
 require (
 	dario.cat/mergo v1.0.2 // indirect
