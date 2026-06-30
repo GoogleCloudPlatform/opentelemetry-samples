@@ -65,7 +65,7 @@ receivers:
       - type: router
         id: check_trace_context
         routes:
-          - expr: 'body["logging.googleapis.com/trace"] != nil'
+          - expr: '"logging.googleapis.com/trace" in body'
             output: add_trace_flags
         default: end_of_pipeline
 
