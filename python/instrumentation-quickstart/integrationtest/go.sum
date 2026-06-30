@@ -8,8 +8,8 @@ github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/DefangLabs/secret-detector v0.0.0-20250811234530-d4b4214cd679 h1:qNT7R4qrN+5u5ajSbqSW1opHP4LA8lzA+ASyw5MQZjs=
 github.com/DefangLabs/secret-detector v0.0.0-20250811234530-d4b4214cd679/go.mod h1:blbwPQh4DTlCZEfk1BLU4oMIhLda2U+A840Uag9DsZw=
-github.com/GoogleCloudPlatform/opentelemetry-operations-e2e-testing/quickstarttest v0.0.0-20251208180208-d58ab0851963 h1:nx9rAzzDqVtOxqULGTGqWCKC51x1f94h3rtczqLFg48=
-github.com/GoogleCloudPlatform/opentelemetry-operations-e2e-testing/quickstarttest v0.0.0-20251208180208-d58ab0851963/go.mod h1:3Le6vNcFeKawDXnVmGnk08p2eaxn0U9ZPb+CYyolpD8=
+github.com/GoogleCloudPlatform/opentelemetry-operations-e2e-testing/quickstarttest v0.0.0-20260630152504-4892b63198e9 h1:h0NWG4gr4IfIvOgHgT3f5trfcxdE4oc36kMX3FLwCNM=
+github.com/GoogleCloudPlatform/opentelemetry-operations-e2e-testing/quickstarttest v0.0.0-20260630152504-4892b63198e9/go.mod h1:3Le6vNcFeKawDXnVmGnk08p2eaxn0U9ZPb+CYyolpD8=
 github.com/Masterminds/semver/v3 v3.4.0 h1:Zog+i5UMtVoCU8oKka5P7i9q9HgrJeGzI9SA1Xbatp0=
 github.com/Masterminds/semver/v3 v3.4.0/go.mod h1:4V+yj/TJE1HU9XfppCwVMZq3I84lprf4nC11bSS5beM=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
