@@ -64,7 +64,7 @@ receivers:
       - type: router
         id: check_trace_context
         routes:
-          - expr: 'body["logging.googleapis.com/trace"] != nil'
+          - expr: '"logging.googleapis.com/trace" in body && body["logging.googleapis.com/trace"] != nil'
             output: add_trace_flags
         default: end_of_pipeline
 
@@ -180,7 +180,7 @@ service:
       exporters: ["otlphttp"]
     metrics:
       receivers: ["otlp"]
-      processors: ["batch", "resourcedetection", "resource/gcp_project_id"]
+      processors: ["batch", "resourcedetection", "resource/gcp_project_id", "resource"]
       exporters: ["otlphttp"]
     logs:
       receivers: ["filelog"]
