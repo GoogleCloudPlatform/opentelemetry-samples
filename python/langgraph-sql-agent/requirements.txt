@@ -106,7 +106,7 @@ langchain-classic==1.0.7
     # via langchain-community
 langchain-community==0.4.1
     # via langgraph-sql-agent (pyproject.toml)
-langchain-core==1.3.2
+langchain-core==1.3.3
     # via
     #   langchain-classic
     #   langchain-community
