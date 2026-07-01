@@ -8,6 +8,8 @@ pluginManagement {
 include ":resource"
 include ":otlptrace"
 include ":otlpmetric"
+include ":otlpmetric-exporter-wrapper"
 include ":autoconf-auth-extension"
 include ":otlp-spring"
 include ":otlpmetrics-function"
+include ":instrumentation-quickstart"

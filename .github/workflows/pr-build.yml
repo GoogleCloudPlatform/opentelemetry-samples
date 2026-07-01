@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sample: [otlpmetric, otlptrace, resource, otlp-spring, otlpmetrics-function, autoconf-auth-extension]
+        sample: [otlpmetric, otlptrace, resource, otlp-spring, otlpmetrics-function, autoconf-auth-extension, instrumentation-quickstart]
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 17
@@ -92,7 +92,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sample: [otlpmetricexport]
+        sample: [otlpmetricexport, otlptraceexport, instrumentation-quickstart]
     steps:
     - uses: actions/checkout@v4
     - name: Set up Node
@@ -112,7 +112,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sample: [otlpmetricexport]
+        sample: [otlpmetricexport, otlptraceexport, instrumentation-quickstart]
         node-version: [18, 20, 22, 24]
     name: Build JS ${{ matrix.sample }} on Node ${{ matrix.node-version }}
     steps:
