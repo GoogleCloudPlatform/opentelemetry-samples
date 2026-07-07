@@ -61,3 +61,4 @@ env/
 .coverage
 htmlcov/
 .adk/
+.ruff_cache/

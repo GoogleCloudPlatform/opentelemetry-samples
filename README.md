@@ -15,6 +15,7 @@ This project provides practical examples across multiple programming languages t
 
 - **[java](./java)**: Java samples.
   - **[autoconf-auth-extension](./java/autoconf-auth-extension)**: Example showing OTLP exporter with GCP Auth Extension for traces and metrics.
+  - **[instrumentation-quickstart](./java/instrumentation-quickstart)**: OpenTelemetry Spring Boot auto-instrumentation quickstart using the Java Agent and OTel Collector.
   - **[otlp-spring](./java/otlp-spring)**: Example showcasing OTLP trace ingest on GCP and Google Auth in a Spring Boot App.
   - **[otlpmetric](./java/otlpmetric)**: Example for OTLP Metric exporter.
   - **[otlpmetrics-function](./java/otlpmetrics-function)**: Example showing how to export OpenTelemetry metrics from a Google Cloud Run Function to Google Managed Prometheus using OpenTelemetry Collector running as a sidecar.
@@ -25,6 +26,7 @@ This project provides practical examples across multiple programming languages t
   - **[trace/otlpgrpc](./golang/trace/otlpgrpc)**: Example showing OTLP exporter being used for traces export to GCP via gRPC.
   - **[trace/otlphttp](./golang/trace/otlphttp)**: Example showing OTLP exporter being used for traces export to GCP via HTTP.
 - **[javascript](./javascript)**: JavaScript samples.
+  - **[instrumentation-quickstart](./javascript/instrumentation-quickstart)**: OpenTelemetry Node.js auto-instrumentation quickstart using Fastify and OTel Collector.
   - **[otlpmetricexport](./javascript/otlpmetricexport)**: Example showing OTLP Metric exporter via gRPC.
   - **[otlptraceexport](./javascript/otlptraceexport)**: Example showing OTLP exporter being used for traces export to GCP using gRPC or HTTP.
 - **[python](./python)**: Python samples.
