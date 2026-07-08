@@ -17,7 +17,9 @@ receivers:
   otlp:
     protocols:
       http:
-        endpoint: 0.0.0.0:4318
+        endpoint: "0.0.0.0:4318"
+      grpc:
+        endpoint: "0.0.0.0:4317"
 
   # Use the filelog receiver to read the application's logs from its log file.
   # This config reads JSON logs in same format that the Cloud Logging agents
@@ -124,11 +126,12 @@ receivers:
         value: true
 
 exporters:
-  # Export logs and traces using the standard googelcloud exporter
+  # Export logs using the standard googlecloud exporter
   googlecloud:
     project: ${GOOGLE_CLOUD_PROJECT}
     log:
       default_log_name: "opentelemetry.io/collector-exported-log"
+  # Export telemetry using standard OTLP HTTP exporter to Google Cloud
   otlphttp:
     encoding: proto
     endpoint: https://telemetry.googleapis.com
@@ -154,7 +157,8 @@ processors:
       - { key: "cluster", value: "no-cluster", action: "upsert" }
       - { key: "namespace", value: "no-namespace", action: "upsert" }
       - { key: "job", value: "us-job", action: "upsert" }
-      - { key: "instance", value: "us-instance", action: "upsert" }
+      - { key: "instance", from_attribute: "service.instance.id", action: "upsert" }
+      - { key: "instance", value: "us-instance", action: "insert" }
   # If running on GCP (e.g. on GKE), detect resource attributes from the environment.
   resourcedetection:
     detectors: ["env", "gcp"]
@@ -174,7 +178,6 @@ service:
               prometheus:
                 host: '0.0.0.0'
                 port: 8888
-                without_type_suffix: true
   pipelines:
     traces:
       receivers: ["otlp"]
@@ -185,6 +188,6 @@ service:
       processors: ["batch", "resourcedetection", "resource/gcp_project_id", "resource"]
       exporters: ["otlphttp"]
     logs:
-      receivers: ["filelog"]
+      receivers: ["otlp", "filelog"]
       processors: ["batch", "resourcedetection"]
       exporters: ["googlecloud"]
