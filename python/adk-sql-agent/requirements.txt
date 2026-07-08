@@ -30,7 +30,7 @@ click==8.4.1
     # via
     #   google-adk
     #   uvicorn
-cryptography==48.0.0
+cryptography==48.0.1
     # via
     #   authlib
     #   google-auth
