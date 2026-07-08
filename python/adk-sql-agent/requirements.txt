@@ -213,7 +213,7 @@ pyopenssl==26.2.0
     # via google-auth
 python-dotenv==1.2.2
     # via google-adk
-python-multipart==0.0.30
+python-multipart==0.0.31
     # via google-adk
 pyyaml==6.0.3
     # via google-adk
