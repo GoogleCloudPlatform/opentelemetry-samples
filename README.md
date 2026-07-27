@@ -31,6 +31,7 @@ This project provides practical examples across multiple programming languages t
   - **[otlptraceexport](./javascript/otlptraceexport)**: Example showing OTLP exporter being used for traces export to GCP using gRPC or HTTP.
 - **[python](./python)**: Python samples.
   - **[adk-sql-agent](./python/adk-sql-agent)**: Example showing ADK SQL Agent sample instrumented with OpenTelemetry.
+  - **[instrumentation-quickstart](./python/instrumentation-quickstart)**: OpenTelemetry Python auto-instrumentation quickstart using Flask and OTel Collector.
   - **[langgraph-sql-agent](./python/langgraph-sql-agent)**: Example showing LangGraph SQL Agent sample instrumented with OpenTelemetry.
   - **[otlpmetric](./python/otlpmetric)**: Example for OTLP Metric exporter.
   - **[otlptrace](./python/otlptrace)**: Example showing OTLP exporter being used for traces export to GCP.
