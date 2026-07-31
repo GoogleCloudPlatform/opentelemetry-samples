@@ -92,15 +92,7 @@ gcloud beta run deploy "$SERVICE_NAME" \
     --set-env-vars="GOOGLE_CLOUD_PROJECT=$PROJECT_ID" \
     --quiet
 
-# 7. Grant Cloud Run Invoker permission to IAP service account
-# echo "Granting Cloud Run Invoker permission to IAP service account..."
-# gcloud run services add-iam-policy-binding "$SERVICE_NAME" \
-#     --region="$REGION" \
-#     --member="serviceAccount:service-$PROJECT_NUMBER@gcp-sa-iap.iam.gserviceaccount.com" \
-#     --role="roles/run.invoker" \
-#     --quiet
-
-# 8. Grant access to client service account
+# 7. Grant access to client service account
 echo "Granting invoker permissions to client service account on IAP..."
 gcloud iap web add-iam-policy-binding \
     --resource-type=cloud-run \
@@ -110,7 +102,7 @@ gcloud iap web add-iam-policy-binding \
     --role="roles/iap.httpsResourceAccessor" \
     --quiet
 
-# 9. Grant Token Creator role to active user for impersonation
+# 8. Grant Token Creator role to active user for impersonation
 GCLOUD_USER=$(gcloud config get-value account 2>/dev/null)
 echo "Granting Token Creator role to $GCLOUD_USER on client service account..."
 gcloud iam service-accounts add-iam-policy-binding "$CLIENT_SA" \
@@ -127,12 +119,12 @@ gcloud projects add-iam-policy-binding "$PROJECT_ID" \
     --condition=None \
     --quiet
 
-# 10. Create Client SA Key (Optional, for key-based authentication)
+# 9. Create Client SA Key (Optional, for key-based authentication)
 # echo "Generating client service account key (optional)..."
 # gcloud iam service-accounts keys create client-sa-key.json \
 #     --iam-account="$CLIENT_SA"
 
-# 11. Get Output Values
+# 10. Get Output Values
 COLLECTOR_URL=$(gcloud run services describe "$SERVICE_NAME" --region="$REGION" --format="value(status.url)")
 
 echo "=========================================================="

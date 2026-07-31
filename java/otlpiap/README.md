@@ -49,12 +49,12 @@ Since Direct IAP on Cloud Run uses a Google-managed OAuth client, its Client ID 
 
 ## Setup & Deployment
 
-The sample includes a shell script `deploy.sh` that automates the provisioning of the Cloud Run service, setting up the Collector configuration, creating necessary service accounts, enabling direct IAP, and downloading the client service account credentials.
+The sample includes a shell script `deploy-otel-collector-iap.sh` that automates the provisioning of the Cloud Run service, setting up the Collector configuration, creating necessary service accounts, enabling direct IAP, and downloading the client service account credentials.
 
 Run the deployment script from this directory:
 
 ```shell
-./deploy.sh
+./deploy-otel-collector-iap.sh
 ```
 
 Upon successful completion, this script will:
@@ -66,10 +66,26 @@ Upon successful completion, this script will:
 - Deploy the Collector to Cloud Run with direct IAP enabled.
 - Grant `otel-client-sa` permissions to invoke the service (via `roles/iap.httpsResourceAccessor`) and view settings (via `roles/iap.settingsAdmin`).
 - Grant the active user permissions to impersonate `otel-client-sa` (via `roles/iam.serviceAccountTokenCreator`).
-- Generate and download `client-sa-key.json` to the current directory (*Optional, will require uncommenting relevant steps from `deploy.sh` script*).
+- Generate and download `client-sa-key.json` to the current directory (*Optional, will require uncommenting relevant steps from `deploy-otel-collector-iap.sh` script*).
 - Output the URL of the deployed Cloud Run Collector.
 
+### Post-Deployment: Grant Cloud Run Invoker permission to IAP service account
+
+After the deployment script completes, you must manually grant the Cloud Run Invoker role to the IAP service account:
+
+1. Find your **Project Number** on the Google Cloud Console Dashboard.
+2. Go to the **Cloud Run** page in the Google Cloud Console.
+3. Click on the name of your service (`otel-collector-iap`).
+4. Click on the **Permissions** tab (if not visible, click **Show Info Panel** in the top right, then select **Permissions**).
+5. Click **Add Principal**.
+6. In the **New principals** field, enter:
+   `service-<PROJECT_NUMBER>@gcp-sa-iap.iam.gserviceaccount.com`
+   *(Replace `<PROJECT_NUMBER>` with your actual project number).*
+7. In the **Select a role** dropdown, select **Cloud Run > Cloud Run Invoker**.
+8. Click **Save**.
+
 ---
+
 
 ## Running the Sample Application
 
@@ -89,7 +105,7 @@ This method uses your local `gcloud` login to automatically impersonate the clie
    export COLLECTOR_URL="<YOUR_COLLECTOR_URL>"
    export IAP_CLIENT_ID="<YOUR_IAP_CLIENT_ID>"
    ```
-   * **COLLECTOR_URL**: Use the `OTel Collector URL` value output at the end of the `deploy.sh` execution.
+   * **COLLECTOR_URL**: Use the `OTel Collector URL` value output at the end of the `deploy-otel-collector-iap.sh` execution.
    * **IAP_CLIENT_ID**: Since Direct IAP on Cloud Run uses a Google-managed OAuth client, its Client ID cannot be retrieved programmatically. You must retrieve it manually from the Google Cloud Console:
      1. Navigate to **APIs & Services > Credentials** in your project.
      2. Under the **OAuth 2.0 Client IDs** section, locate and copy the client ID associated with your IAP service (typically named matching your Cloud Run service or IAP configuration).
@@ -103,7 +119,7 @@ This method uses your local `gcloud` login to automatically impersonate the clie
 ### Option B: Using the Service Account Key File
 
 This method uses the downloaded JSON key file to authenticate directly as the client service account.
-Note: You need to update the `deploy.sh` script to uncomment the steps for creating the client service account key.
+Note: You need to update the `deploy-otel-collector-iap.sh` script to uncomment the steps for creating the client service account key.
 
 1. Set the environment variables pointing to your downloaded key and IAP configuration:
    ```shell
