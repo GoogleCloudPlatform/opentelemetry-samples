@@ -28,25 +28,6 @@ Before running the sample, ensure you have:
    ```
 ---
 
-## Manual Setup Requirements (GCP Console)
-
-Some parts of the Google Cloud configuration cannot be automated via CLI and must be configured manually in the Cloud Console:
-
-### 1. OAuth Consent Screen Configuration
-If this is the first time you are using OAuth or enabling IAP in your GCP project, you must configure the OAuth Consent Screen:
-1. Navigate to the [OAuth consent screen](https://console.cloud.google.com/apis/credentials/consent) in the Google Cloud Console.
-2. Select **Internal** (if your project is in a Google Workspace organization) or **External** as the user type.
-3. Fill in the required fields (App name, User support email, Developer contact information) and click **Save and Continue**.
-4. You do not need to add any scopes or test users for this example. Click **Save** to complete.
-
-### 2. Retrieve the Google-Managed OAuth Client ID
-Since Direct IAP on Cloud Run uses a Google-managed OAuth client, its Client ID is managed automatically under the hood and cannot be retrieved programmatically by the deployment script. You must copy it manually:
-1. Navigate to the [Credentials page](https://console.cloud.google.com/apis/credentials) in the Google Cloud Console.
-2. Under the **OAuth 2.0 Client IDs** section, locate the Client ID associated with your IAP service (often named `IAP-App-Engine-app` or similar, or matching your Cloud Run service name).
-3. Copy the **Client ID** string (e.g. `568958109999-xxxxxx.apps.googleusercontent.com`). This is the value you will set as the `IAP_CLIENT_ID` environment variable when running the Java app.
-
----
-
 ## Setup & Deployment
 
 The sample includes a shell script `deploy-otel-collector-iap.sh` that automates the provisioning of the Cloud Run service, setting up the Collector configuration, creating necessary service accounts, enabling direct IAP, and downloading the client service account credentials.
@@ -86,6 +67,50 @@ After the deployment script completes, you must manually grant the Cloud Run Inv
 
 ---
 
+## Manual Setup Requirements (GCP Console)
+
+Some parts of the Google Cloud configuration cannot be automated via CLI and must be configured manually in the Cloud Console:
+
+### 1. OAuth Consent Screen Configuration
+If this is the first time you are using OAuth or enabling IAP in your GCP project, you must configure the OAuth Consent Screen:
+1. Navigate to the [OAuth consent screen](https://console.cloud.google.com/apis/credentials/consent) in the Google Cloud Console.
+2. Select **Internal** (if your project is in a Google Workspace organization) or **External** as the user type.
+3. Fill in the required fields (App name, User support email, Developer contact information) and click **Save and Continue**.
+4. You do not need to add any scopes or test users for this example. Click **Save** to complete.
+
+### 2. Configure Custom OAuth and Retrieve the Client ID
+By default, the deployed IAP service on Cloud Run uses a Google-managed OAuth client. To enable programmatic access from your client application, this must be changed to use a custom OAuth 2.0 client.
+
+To configure this and auto-generate the Client ID:
+1. Navigate to the [Identity-Aware Proxy page](https://console.cloud.google.com/security/iap) in the Google Cloud Console.
+2. Under the **Applications** tab, locate your Cloud Run service (e.g., `otel-collector-iap`).
+3. Click the three dots (Actions menu) at the end of the row for your service and select **Edit OAuth client**.
+4. In the side panel, change the setting to use a **Custom OAuth client**. If you do not have one, you can choose to auto-generate the OAuth 2.0 Client ID.
+5. Once configured, navigate to the [Credentials page](https://console.cloud.google.com/apis/credentials) in the Google Cloud Console.
+6. Under the **OAuth 2.0 Client IDs** section, locate the client ID associated with your IAP service (typically named after your Cloud Run service or IAP configuration).
+7. Copy the **Client ID** string (e.g., `568958109999-xxxxxx.apps.googleusercontent.com`). This is the value you will set as the `IAP_CLIENT_ID` environment variable when running the Java app.
+
+### 3. Configure OAuth Client for programmatic access
+To allow programmatic access using the specific Client ID, you must add it to the allowlist for programmatic access on the IAP resource.
+
+1. Create a file named `iap_settings.yaml` with the following content (replace `YOUR_CLIENT_ID` with the copied Client ID):
+   ```yaml
+   access_settings:
+     oauth_settings:
+       programmatic_clients:
+       - "YOUR_CLIENT_ID"
+   ```
+2. Apply these settings to your Cloud Run service (replace `YOUR_PROJECT_ID` and `YOUR_REGION` with your project and region):
+   ```shell
+   gcloud iap settings set iap_settings.yaml \
+       --project="YOUR_PROJECT_ID" \
+       --resource-type=cloud-run \
+       --region="YOUR_REGION" \
+       --service="otel-collector-iap"
+   ```
+   *(For details, see [IAP Programmatic Access documentation](https://cloud.google.com/iap/docs/sharing-oauth-clients#programmatic_access).)*
+
+---
 
 ## Running the Sample Application
 
@@ -106,9 +131,16 @@ This method uses your local `gcloud` login to automatically impersonate the clie
    export IAP_CLIENT_ID="<YOUR_IAP_CLIENT_ID>"
    ```
    * **COLLECTOR_URL**: Use the `OTel Collector URL` value output at the end of the `deploy-otel-collector-iap.sh` execution.
-   * **IAP_CLIENT_ID**: Since Direct IAP on Cloud Run uses a Google-managed OAuth client, its Client ID cannot be retrieved programmatically. You must retrieve it manually from the Google Cloud Console:
-     1. Navigate to **APIs & Services > Credentials** in your project.
-     2. Under the **OAuth 2.0 Client IDs** section, locate and copy the client ID associated with your IAP service (typically named matching your Cloud Run service or IAP configuration).
+   * **IAP_CLIENT_ID**: You must configure custom OAuth 2.0 and retrieve the Client ID manually from the Google Cloud Console:
+
+     > [!IMPORTANT]
+     > By default, the deployed IAP service uses Google Managed OAuth. This must be changed to custom OAuth 2.0 to enable programmatic access from your client application.
+
+     To configure this and retrieve the ID:
+     1. Go to **Security > Identity-Aware Proxy** in the Cloud Console.
+     2. Find your service, click the three dots, select **Edit OAuth client**, and change it to use a **Custom OAuth client** (this will auto-generate the Client ID).
+     3. Navigate to **APIs & Services > Credentials** in your project.
+     4. Under the **OAuth 2.0 Client IDs** section, locate and copy the client ID associated with your IAP service (typically named matching your Cloud Run service or IAP configuration).
 
 3. Run the Java application using Gradle from the repository root:
    ```shell

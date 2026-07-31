@@ -15,7 +15,7 @@
  */
 package com.google.cloud.opentelemetry.samples.otlpiap;
 
-import static java.util.Arrays.stream;
+import static java.util.Arrays.asList;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.IdTokenCredentials;
@@ -31,7 +31,6 @@ import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk;
 import java.io.IOException;
 
-import java.security.cert.CertPathValidatorException.Reason;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -97,6 +96,7 @@ public class OTLPIAPExample {
     IdTokenCredentials idTokenCredentials = IdTokenCredentials.newBuilder()
         .setIdTokenProvider((IdTokenProvider) credentials)
         .setTargetAudience(iapClientId)
+        .setOptions(asList(IdTokenProvider.Option.INCLUDE_EMAIL))
         .build();
 
     // Supplier that will automatically refresh and supply the authorization header
