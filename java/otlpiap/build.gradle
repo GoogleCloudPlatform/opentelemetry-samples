@@ -29,10 +29,24 @@ repositories {
 dependencies {
 	implementation("io.opentelemetry:opentelemetry-api:1.62.0")
 	implementation("io.opentelemetry:opentelemetry-sdk:1.62.0")
+	implementation("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.62.0")
 	implementation("io.opentelemetry:opentelemetry-exporter-otlp:1.62.0")
+	implementation("io.opentelemetry.contrib:opentelemetry-gcp-resources:1.56.0-alpha")
 	implementation("com.google.auth:google-auth-library-oauth2-http:1.24.0")
 }
 
+def autoconf_config = [
+	"-Dotel.exporter.otlp.endpoint=" + (System.getenv('COLLECTOR_URL') ?: ''),
+	'-Dotel.traces.exporter=otlp',
+	'-Dotel.metrics.exporter=otlp',
+	'-Dotel.logs.exporter=none',
+	'-Dotel.service.name=otlpiap-example',
+	'-Dotel.exporter.otlp.protocol=http/protobuf',
+	'-Dotel.java.global-autoconfigure.enabled=true',
+	"-Diap.client.id=" + (System.getenv('IAP_CLIENT_ID') ?: '')
+]
+
 application {
 	mainClassName = 'com.google.cloud.opentelemetry.samples.otlpiap.OTLPIAPExample'
+	applicationDefaultJvmArgs = autoconf_config
 }

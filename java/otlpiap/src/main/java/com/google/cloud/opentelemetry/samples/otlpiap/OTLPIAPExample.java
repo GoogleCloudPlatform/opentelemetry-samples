@@ -28,11 +28,9 @@ import io.opentelemetry.context.Scope;
 import io.opentelemetry.exporter.otlp.http.metrics.OtlpHttpMetricExporter;
 import io.opentelemetry.exporter.otlp.http.trace.OtlpHttpSpanExporter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
-import io.opentelemetry.sdk.metrics.SdkMeterProvider;
-import io.opentelemetry.sdk.metrics.export.PeriodicMetricReader;
-import io.opentelemetry.sdk.trace.SdkTracerProvider;
-import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
+import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk;
 import java.io.IOException;
+
 import java.security.cert.CertPathValidatorException.Reason;
 import java.util.List;
 import java.util.Map;
@@ -58,15 +56,24 @@ public class OTLPIAPExample {
     otelLogger.addHandler(handler);
     otelLogger.setUseParentHandlers(false);
 
-    String collectorUrl = System.getenv("COLLECTOR_URL");
-    String iapClientId = System.getenv("IAP_CLIENT_ID");
+    String resolvedCollectorUrl = System.getProperty("otel.exporter.otlp.endpoint");
+    if (resolvedCollectorUrl == null || resolvedCollectorUrl.isEmpty()) {
+      resolvedCollectorUrl = System.getenv("COLLECTOR_URL");
+    }
+    final String collectorUrl = resolvedCollectorUrl;
+
+    String resolvedIapClientId = System.getProperty("iap.client.id");
+    if (resolvedIapClientId == null || resolvedIapClientId.isEmpty()) {
+      resolvedIapClientId = System.getenv("IAP_CLIENT_ID");
+    }
+    final String iapClientId = resolvedIapClientId;
 
     if (collectorUrl == null || collectorUrl.isEmpty()) {
-      System.err.println("Error: COLLECTOR_URL environment variable is not set.");
+      System.err.println("Error: Collector URL is not set (via otel.exporter.otlp.endpoint property or COLLECTOR_URL env var).");
       System.exit(1);
     }
     if (iapClientId == null || iapClientId.isEmpty()) {
-      System.err.println("Error: IAP_CLIENT_ID environment variable is not set.");
+      System.err.println("Error: IAP Client ID is not set (via iap.client.id property or IAP_CLIENT_ID env var).");
       System.exit(1);
     }
 
@@ -102,30 +109,22 @@ public class OTLPIAPExample {
       }
     };
 
-    // 2. Configure HTTP exporters to route telemetry to the Cloud Run Collector
-    // behind IAP
-    OtlpHttpSpanExporter spanExporter = OtlpHttpSpanExporter.builder()
-        .setEndpoint(collectorUrl + "/v1/traces")
-        .setHeaders(headerSupplier)
-        .build();
-
-    SdkTracerProvider tracerProvider = SdkTracerProvider.builder()
-        .addSpanProcessor(BatchSpanProcessor.builder(spanExporter).build())
-        .build();
-
-    OtlpHttpMetricExporter metricExporter = OtlpHttpMetricExporter.builder()
-        .setEndpoint(collectorUrl + "/v1/metrics")
-        .setHeaders(headerSupplier)
-        .build();
-
-    SdkMeterProvider meterProvider = SdkMeterProvider.builder()
-        .registerMetricReader(PeriodicMetricReader.builder(metricExporter).build())
-        .build();
-
-    OpenTelemetrySdk openTelemetrySdk = OpenTelemetrySdk.builder()
-        .setTracerProvider(tracerProvider)
-        .setMeterProvider(meterProvider)
-        .buildAndRegisterGlobal();
+    // 2. Configure AutoConfiguredOpenTelemetrySdk with custom HTTP exporters that include IAP headers
+    OpenTelemetrySdk openTelemetrySdk = AutoConfiguredOpenTelemetrySdk.builder()
+        .addSpanExporterCustomizer((existingExporter, config) -> 
+            OtlpHttpSpanExporter.builder()
+                .setEndpoint(collectorUrl + "/v1/traces")
+                .setHeaders(headerSupplier)
+                .build()
+        )
+        .addMetricExporterCustomizer((existingExporter, config) -> 
+            OtlpHttpMetricExporter.builder()
+                .setEndpoint(collectorUrl + "/v1/metrics")
+                .setHeaders(headerSupplier)
+                .build()
+        )
+        .build()
+        .getOpenTelemetrySdk();
 
     // 3. Generate sample traces and metrics
     Tracer tracer = openTelemetrySdk.getTracer(INSTRUMENTATION_SCOPE_NAME);
@@ -152,8 +151,8 @@ public class OTLPIAPExample {
 
     // 4. Clean shutdown to flush all buffered metrics and spans
     System.out.println("Flushing and shutting down OpenTelemetry SDK...");
-    tracerProvider.shutdown().join(10, TimeUnit.SECONDS);
-    meterProvider.shutdown().join(10, TimeUnit.SECONDS);
+    openTelemetrySdk.getSdkTracerProvider().shutdown().join(10, TimeUnit.SECONDS);
+    openTelemetrySdk.getSdkMeterProvider().shutdown().join(10, TimeUnit.SECONDS);
     System.out.println("Shutdown complete. Telemetry exported successfully!");
   }
 
