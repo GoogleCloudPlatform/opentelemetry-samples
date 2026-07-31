@@ -6,13 +6,20 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+
 jobs:
   java-spotless:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        persist-credentials: false
     - name: Set up JDK 17
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
       with:
         java-version: '17'
         distribution: 'temurin'
@@ -24,13 +31,17 @@ jobs:
 
   java-samples-build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
         sample: [otlpmetric, otlptrace, resource, otlp-spring, otlpmetrics-function, autoconf-auth-extension, instrumentation-quickstart, otlpiap]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        persist-credentials: false
     - name: Set up JDK 17
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
       with:
         java-version: '17'
         distribution: 'temurin'
@@ -42,13 +53,17 @@ jobs:
 
   go-samples-build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
         sample: [metric/otlpgrpc, trace/otlpgrpc, trace/otlphttp]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        persist-credentials: false
     - name: Set up Go
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
       with:
         go-version: '1.26.3'
     - name: Build Go Sample
@@ -58,13 +73,17 @@ jobs:
 
   go-lint:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
         sample: [metric/otlpgrpc, trace/otlpgrpc, trace/otlphttp]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
         with:
           go-version: '1.26.3'
       - name: Install golangci-lint
@@ -76,10 +95,14 @@ jobs:
 
   python-lint:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        persist-credentials: false
     - name: Set up uv
-      uses: astral-sh/setup-uv@v5
+      uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
       with:
         enable-cache: true
         python-version: '3.11'
@@ -90,13 +113,17 @@ jobs:
 
   javascript-lint:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
         sample: [otlpmetricexport, otlptraceexport, instrumentation-quickstart]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        persist-credentials: false
     - name: Set up Node
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
       with:
         node-version: '20'
     - name: Install dependencies
@@ -110,15 +137,19 @@ jobs:
 
   javascript-samples-build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
         sample: [otlpmetricexport, otlptraceexport, instrumentation-quickstart]
         node-version: [18, 20, 22, 24]
     name: Build JS ${{ matrix.sample }} on Node ${{ matrix.node-version }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        persist-credentials: false
     - name: Set up Node ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
       with:
         node-version: ${{ matrix.node-version }}
     - name: Install dependencies
