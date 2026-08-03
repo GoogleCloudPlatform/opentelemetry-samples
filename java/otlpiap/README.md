@@ -47,7 +47,6 @@ Upon successful completion, this script will:
 - Deploy the Collector to Cloud Run with direct IAP enabled.
 - Grant `otel-client-sa` permissions to invoke the service (via `roles/iap.httpsResourceAccessor`) and view settings (via `roles/iap.settingsAdmin`).
 - Grant the active user permissions to impersonate `otel-client-sa` (via `roles/iam.serviceAccountTokenCreator`).
-- Generate and download `client-sa-key.json` to the current directory (*Optional, will require uncommenting relevant steps from `deploy-otel-collector-iap.sh` script*).
 - Output the URL of the deployed Cloud Run Collector.
 
 ### Post-Deployment: Grant Cloud Run Invoker permission to IAP service account
@@ -127,10 +126,10 @@ This method uses your local `gcloud` login to automatically impersonate the clie
 
 2. Retrieve the required values and set the environment variables:
    ```shell
-   export COLLECTOR_URL="<YOUR_COLLECTOR_URL>"
+   export OTEL_EXPORTER_OTLP_ENDPOINT="<YOUR_COLLECTOR_URL>"
    export IAP_CLIENT_ID="<YOUR_IAP_CLIENT_ID>"
    ```
-   * **COLLECTOR_URL**: Use the `OTel Collector URL` value output at the end of the `deploy-otel-collector-iap.sh` execution.
+   * **OTEL_EXPORTER_OTLP_ENDPOINT**: Use the `OTel Collector URL` value output at the end of the `deploy-otel-collector-iap.sh` execution.
    * **IAP_CLIENT_ID**: You must configure custom OAuth 2.0 and retrieve the Client ID manually from the Google Cloud Console:
 
      > [!IMPORTANT]
@@ -150,16 +149,19 @@ This method uses your local `gcloud` login to automatically impersonate the clie
 
 ### Option B: Using the Service Account Key File
 
+> [!WARNING]
+> This method is not recommended for production use. Downloading and storing service account keys locally is a security risk. Use this method only for testing purposes.
+
 This method uses the downloaded JSON key file to authenticate directly as the client service account.
 Note: You need to update the `deploy-otel-collector-iap.sh` script to uncomment the steps for creating the client service account key.
 
 1. Set the environment variables pointing to your downloaded key and IAP configuration:
    ```shell
    export GOOGLE_APPLICATION_CREDENTIALS=client-sa-key.json
-   export COLLECTOR_URL="<YOUR_COLLECTOR_URL>"
+   export OTEL_EXPORTER_OTLP_ENDPOINT="<YOUR_COLLECTOR_URL>"
    export IAP_CLIENT_ID="<YOUR_IAP_CLIENT_ID>"
    ```
-   *(See step 2 of Option A for instructions on how to find the `COLLECTOR_URL` and `IAP_CLIENT_ID` values)*
+   *(See step 2 of Option A for instructions on how to find the `YOUR_COLLECTOR_URL` and `IAP_CLIENT_ID` values)*
 
 
 2. Run the Java application using Gradle from the repository root:

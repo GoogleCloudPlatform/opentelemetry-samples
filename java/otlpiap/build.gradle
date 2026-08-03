@@ -36,7 +36,7 @@ dependencies {
 }
 
 def autoconf_config = [
-	"-Dotel.exporter.otlp.endpoint=" + (System.getenv('COLLECTOR_URL') ?: ''),
+	"-Dotel.exporter.otlp.endpoint=" + (System.getenv('OTEL_EXPORTER_OTLP_ENDPOINT') ?: ''),
 	'-Dotel.traces.exporter=otlp',
 	'-Dotel.metrics.exporter=otlp',
 	'-Dotel.logs.exporter=none',
