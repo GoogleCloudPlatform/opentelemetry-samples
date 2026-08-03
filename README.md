@@ -17,6 +17,7 @@ This project provides practical examples across multiple programming languages t
   - **[autoconf-auth-extension](./java/autoconf-auth-extension)**: Example showing OTLP exporter with GCP Auth Extension for traces and metrics.
   - **[instrumentation-quickstart](./java/instrumentation-quickstart)**: OpenTelemetry Spring Boot auto-instrumentation quickstart using the Java Agent and OTel Collector.
   - **[otlp-spring](./java/otlp-spring)**: Example showcasing OTLP trace ingest on GCP and Google Auth in a Spring Boot App.
+  - **[otlpiap](./java/otlpiap)**: Example showing OTLP exporter sending telemetry to a Cloud Run collector behind IAP.
   - **[otlpmetric](./java/otlpmetric)**: Example for OTLP Metric exporter.
   - **[otlpmetrics-function](./java/otlpmetrics-function)**: Example showing how to export OpenTelemetry metrics from a Google Cloud Run Function to Google Managed Prometheus using OpenTelemetry Collector running as a sidecar.
   - **[otlptrace](./java/otlptrace)**: Example showing OTLP exporter being used for traces export to GCP.
@@ -31,6 +32,7 @@ This project provides practical examples across multiple programming languages t
   - **[otlptraceexport](./javascript/otlptraceexport)**: Example showing OTLP exporter being used for traces export to GCP using gRPC or HTTP.
 - **[python](./python)**: Python samples.
   - **[adk-sql-agent](./python/adk-sql-agent)**: Example showing ADK SQL Agent sample instrumented with OpenTelemetry.
+  - **[instrumentation-quickstart](./python/instrumentation-quickstart)**: OpenTelemetry Python auto-instrumentation quickstart using Flask and OTel Collector.
   - **[langgraph-sql-agent](./python/langgraph-sql-agent)**: Example showing LangGraph SQL Agent sample instrumented with OpenTelemetry.
   - **[otlpmetric](./python/otlpmetric)**: Example for OTLP Metric exporter.
   - **[otlptrace](./python/otlptrace)**: Example showing OTLP exporter being used for traces export to GCP.
