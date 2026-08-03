@@ -33,6 +33,7 @@ dependencies {
 	implementation("io.opentelemetry:opentelemetry-exporter-otlp:1.62.0")
 	implementation("io.opentelemetry.contrib:opentelemetry-gcp-resources:1.56.0-alpha")
 	implementation("com.google.auth:google-auth-library-oauth2-http:1.24.0")
+	implementation("io.opentelemetry.contrib:opentelemetry-gcp-auth-extension:1.60.0-alpha")
 }
 
 def autoconf_config = [
@@ -43,7 +44,8 @@ def autoconf_config = [
 	'-Dotel.service.name=otlpiap-example',
 	'-Dotel.exporter.otlp.protocol=http/protobuf',
 	'-Dotel.java.global-autoconfigure.enabled=true',
-	"-Diap.client.id=" + (System.getenv('IAP_CLIENT_ID') ?: '')
+	'-Dgoogle.otel.auth.token.type=id_token',
+	"-Dgoogle.otel.auth.id.token.audience=" + (System.getenv('IAP_CLIENT_ID') ?: '')
 ]
 
 application {

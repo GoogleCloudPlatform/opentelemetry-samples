@@ -1,10 +1,11 @@
 # OTLP Export to Cloud Run Collector behind Identity-Aware Proxy (IAP)
 
 This sample demonstrates how to run an OpenTelemetry Collector inside a Cloud Run service secured with **direct Identity-Aware Proxy (IAP)**, and how to programmatically send telemetry (traces and metrics) from a Java application to this secured Collector. The Collector is configured to export all received telemetry to Google's Native Telemetry API (`telemetry.googleapis.com`).
+This sample relies on the [gcp-auth-extension](https://github.com/open-telemetry/opentelemetry-java-contrib/tree/main/gcp-auth-extension) to work.
 
 ## Architecture & How It Works
 
-1. **Client Application (Java)**: Generates traces and metrics. It uses the `google-auth-library-java` to obtain a Google OIDC ID token targeting the IAP OAuth Client ID. It passes this token dynamically in the `Authorization: Bearer <ID_TOKEN>` header for all OTLP/HTTP requests to the Collector.
+1. **Client Application (Java)**: Generates traces and metrics. It leverages the OpenTelemetry SDK autoconfiguration alongside the [gcp-auth-extension](https://github.com/open-telemetry/opentelemetry-java-contrib/tree/main/gcp-auth-extension) to automatically fetch, cache, and attach Google OIDC ID tokens targeting the IAP OAuth Client ID (`google.otel.auth.token.type=id_token` and `google.otel.auth.id.token.audience`). The extension injects the token into the `Authorization: Bearer <ID_TOKEN>` header for all OTLP/HTTP requests sent to the Collector without requiring manual token management in application code.
 2. **Identity-Aware Proxy (IAP)**: Secured directly on the Cloud Run service (`otel-collector-iap`). It intercepts incoming requests, validates the Google-signed ID token, and verifies that the calling service account has the **IAP-secured Web App User** (`roles/iap.httpsResourceAccessor`) role.
 3. **Cloud Run Service (`otel-collector-iap`)**: Runs the OpenTelemetry Collector Contrib container. It is configured to receive OTLP/HTTP traffic on the container port allocated by Cloud Run.
 4. **OpenTelemetry Collector**:
@@ -25,6 +26,10 @@ Before running the sample, ensure you have:
 3. A Google Cloud project set as your active project:
    ```shell
    gcloud config set project YOUR_PROJECT_ID
+   ```
+4. Configure the `GOOGLE_CLOUD_PROJECT` environment variable for the [gcp-auth-extension](https://github.com/open-telemetry/opentelemetry-java-contrib/tree/main/gcp-auth-extension):
+   ```shell
+   export GOOGLE_CLOUD_PROJECT=YOUR_PROJECT_ID
    ```
 ---
 
