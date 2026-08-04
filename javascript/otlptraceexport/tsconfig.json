@@ -3,8 +3,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "outDir": "build",
-    "esModuleInterop": true,
-    "lib": ["ES2022", "DOM", "DOM.Iterable"]
+    "esModuleInterop": true
   },
   "include": [
     "src/**/*.ts",

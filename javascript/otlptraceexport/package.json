@@ -39,8 +39,5 @@
     "ts-node": "10.9.2",
     "typescript": "5.6.3"
   },
-  "overrides": {
-    "protobufjs": "7.5.4"
-  },
   "description": "This example shows how to send traces to an OTLP *(OpenTelemetry Protocol)* endpoint that is protected by GCP authentication over gRPC."
 }
