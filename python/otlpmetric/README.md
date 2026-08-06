@@ -6,7 +6,7 @@ Install the dependencies and libraries required to run the samples:
 
 ```sh
 # Move to the sample repository
-cd samples/otlpmetric
+cd python/otlpmetric
 
 pip install -r requirements.txt
 ```
@@ -22,9 +22,9 @@ gcloud auth application-default login
 ```sh
 # export necessary OTEL environment variables
 export PROJECT_ID=<project-id>
-export OTEL_EXPORTER_OTLP_ENDPOINT=<endpoint>
+export OTEL_EXPORTER_OTLP_ENDPOINT="https://telemetry.googleapis.com"
 export OTEL_RESOURCE_ATTRIBUTES="gcp.project_id=$PROJECT_ID,service.name=otlp-sample,service.instance.id=1"
 
-# from the samples/otlpmetric repository
+# from the python/otlpmetric directory
 python3 example.py
 ```
