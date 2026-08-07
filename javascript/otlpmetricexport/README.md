@@ -14,12 +14,12 @@ npm install
 ```sh
 # export necessary OTEL environment variables
 export PROJECT_ID=<project-id>
-export OTEL_EXPORTER_OTLP_ENDPOINT=<endpoint>
+export OTEL_EXPORTER_OTLP_ENDPOINT="https://telemetry.googleapis.com"
 export OTEL_RESOURCE_ATTRIBUTES="gcp.project_id=$PROJECT_ID,service.name=otlp-sample"
 
 # run the app - this starts app at port 8080
 # the start script uses gRPC to export
-cd samples/otlpmetricexport && npm run start
+cd javascript/otlpmetricexport && npm run start
 ```
 
 ## View metrics
