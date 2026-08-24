@@ -24,18 +24,22 @@
 #include "opentelemetry/sdk/metrics/view/view_registry.h"
 
 #define ASSERT_TRUE(cond)                                                      \
-  if (!(cond)) {                                                               \
-    std::cerr << "Assertion failed: " #cond " at " << __FILE__ << ":"          \
-              << __LINE__ << std::endl;                                        \
-    std::exit(1);                                                              \
-  }
+  do {                                                                         \
+    if (!(cond)) {                                                             \
+      std::cerr << "Assertion failed: " #cond " at " << __FILE__ << ":"        \
+                << __LINE__ << std::endl;                                      \
+      std::exit(1);                                                            \
+    }                                                                          \
+  } while (0)
 
 #define ASSERT_EQ(a, b)                                                        \
-  if (!((a) == (b))) {                                                         \
-    std::cerr << "Assertion failed: " #a " == " #b " at " << __FILE__ << ":"   \
-              << __LINE__ << std::endl;                                        \
-    std::exit(1);                                                              \
-  }
+  do {                                                                         \
+    if (!((a) == (b))) {                                                       \
+      std::cerr << "Assertion failed: " #a " == " #b " at " << __FILE__ << ":" \
+                << __LINE__ << std::endl;                                      \
+      std::exit(1);                                                            \
+    }                                                                          \
+  } while (0)
 
 using opentelemetry::nostd::get;
 
