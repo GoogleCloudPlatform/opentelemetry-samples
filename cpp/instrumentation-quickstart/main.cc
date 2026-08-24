@@ -59,7 +59,10 @@ void HandleMulti(const httplib::Request& req, httplib::Response& res) {
                                    {{"subRequests", sub_requests}});
 
   for (int i = 0; i < sub_requests; ++i) {
-    opentelemetry_quickstart::HttpClientGet("http://127.0.0.1:8080", "/single");
+    if (!opentelemetry_quickstart::HttpClientGet("http://127.0.0.1:8080", "/single")) {
+      opentelemetry_quickstart::LogWarn("subrequest to /single failed",
+                                       {{"subRequestIndex", i}});
+    }
   }
 
   res.set_content("ok", "text/plain");

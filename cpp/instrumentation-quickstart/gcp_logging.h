@@ -28,6 +28,7 @@ nlohmann::json FormatLogEntry(const std::string& message,
 // Writes a structured JSON log message to stdout in Google Cloud Logging format,
 // automatically correlating with the active OpenTelemetry span and trace.
 void LogInfo(const std::string& message, const nlohmann::json& extra = nlohmann::json::object());
+void LogWarn(const std::string& message, const nlohmann::json& extra = nlohmann::json::object());
 
 }  // namespace opentelemetry_quickstart
 
