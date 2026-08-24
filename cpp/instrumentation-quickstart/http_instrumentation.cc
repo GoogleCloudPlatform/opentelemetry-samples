@@ -21,6 +21,7 @@
 #include "opentelemetry/metrics/provider.h"
 #include "opentelemetry/trace/provider.h"
 #include "opentelemetry/trace/scope.h"
+#include "opentelemetry/trace/span.h"
 #include "opentelemetry/trace/tracer.h"
 
 namespace opentelemetry_quickstart {
@@ -162,20 +163,55 @@ bool HttpClientGet(const std::string& host, const std::string& path) {
   int status_code = res ? res->status : 0;
   if (res) {
     span->SetAttribute("http.response.status_code", res->status);
+    if (res->status >= 400) {
+      span->SetStatus(opentelemetry::trace::StatusCode::kError, "HTTP " + std::to_string(res->status));
+      span->SetAttribute("error.type", std::to_string(res->status));
+    }
+  } else {
+    span->SetStatus(opentelemetry::trace::StatusCode::kError, "HTTP request failed");
+    span->SetAttribute("error.type", "connection_error");
   }
 
   if (g_instruments && g_instruments->client_duration) {
-    g_instruments->client_duration->Record(
-        duration_s,
-        {
-            {"http.request.method", "GET"},
-            {"http.response.status_code", status_code},
-            {"network.protocol.name", "http"},
-            {"network.protocol.version", "1.1"},
-            {"server.address", server_address},
-            {"server.port", server_port},
-        },
-        opentelemetry::context::RuntimeContext::GetCurrent());
+    if (!res) {
+      g_instruments->client_duration->Record(
+          duration_s,
+          {
+              {"http.request.method", "GET"},
+              {"http.response.status_code", status_code},
+              {"network.protocol.name", "http"},
+              {"network.protocol.version", "1.1"},
+              {"server.address", server_address},
+              {"server.port", server_port},
+              {"error.type", "connection_error"},
+          },
+          opentelemetry::context::RuntimeContext::GetCurrent());
+    } else if (res->status >= 400) {
+      g_instruments->client_duration->Record(
+          duration_s,
+          {
+              {"http.request.method", "GET"},
+              {"http.response.status_code", status_code},
+              {"network.protocol.name", "http"},
+              {"network.protocol.version", "1.1"},
+              {"server.address", server_address},
+              {"server.port", server_port},
+              {"error.type", std::to_string(res->status)},
+          },
+          opentelemetry::context::RuntimeContext::GetCurrent());
+    } else {
+      g_instruments->client_duration->Record(
+          duration_s,
+          {
+              {"http.request.method", "GET"},
+              {"http.response.status_code", status_code},
+              {"network.protocol.name", "http"},
+              {"network.protocol.version", "1.1"},
+              {"server.address", server_address},
+              {"server.port", server_port},
+          },
+          opentelemetry::context::RuntimeContext::GetCurrent());
+    }
   }
 
   span->End();
@@ -223,22 +259,41 @@ void RegisterInstrumentedGet(
 
     int status_code = res.status > 0 ? res.status : 200;
     span->SetAttribute("http.response.status_code", status_code);
+    if (status_code >= 500) {
+      span->SetStatus(opentelemetry::trace::StatusCode::kError, "HTTP " + std::to_string(status_code));
+      span->SetAttribute("error.type", std::to_string(status_code));
+    }
 
     auto end_time = std::chrono::steady_clock::now();
     double duration_s = std::chrono::duration<double>(end_time - start_time).count();
 
     if (g_instruments && g_instruments->server_duration) {
-      g_instruments->server_duration->Record(
-          duration_s,
-          {
-              {"http.request.method", "GET"},
-              {"http.route", pattern},
-              {"http.response.status_code", status_code},
-              {"network.protocol.name", "http"},
-              {"network.protocol.version", "1.1"},
-              {"url.scheme", "http"},
-          },
-          opentelemetry::context::RuntimeContext::GetCurrent());
+      if (status_code >= 500) {
+        g_instruments->server_duration->Record(
+            duration_s,
+            {
+                {"http.request.method", "GET"},
+                {"http.route", pattern},
+                {"http.response.status_code", status_code},
+                {"network.protocol.name", "http"},
+                {"network.protocol.version", "1.1"},
+                {"url.scheme", "http"},
+                {"error.type", std::to_string(status_code)},
+            },
+            opentelemetry::context::RuntimeContext::GetCurrent());
+      } else {
+        g_instruments->server_duration->Record(
+            duration_s,
+            {
+                {"http.request.method", "GET"},
+                {"http.route", pattern},
+                {"http.response.status_code", status_code},
+                {"network.protocol.name", "http"},
+                {"network.protocol.version", "1.1"},
+                {"url.scheme", "http"},
+            },
+            opentelemetry::context::RuntimeContext::GetCurrent());
+      }
     }
 
     span->End();

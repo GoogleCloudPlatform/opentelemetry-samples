@@ -87,6 +87,14 @@ void LogInfo(const std::string& message, const nlohmann::json& extra) {
   std::lock_guard<std::mutex> lock(g_log_mutex);
   std::cout << line << std::flush;
 }
+
+void LogWarn(const std::string& message, const nlohmann::json& extra) {
+  nlohmann::json log_entry = FormatLogEntry(message, extra);
+  log_entry["severity"] = "WARNING";
+  std::string line = log_entry.dump() + "\n";
+  std::lock_guard<std::mutex> lock(g_log_mutex);
+  std::cout << line << std::flush;
+}
 // [END opentelemetry_instrumentation_setup_logging]
 
 }  // namespace opentelemetry_quickstart
