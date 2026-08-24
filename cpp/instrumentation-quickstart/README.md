@@ -2,7 +2,7 @@
 
 This sample is a C++ application instrumented with OpenTelemetry. It uses docker compose to run the application and send it requests.
 
-This sample is configured to use standard OpenTelemetry OTLP/HTTP exporters to export traces, metrics, and logs to Google Cloud via the OTel Collector. It does not rely on any custom Google Cloud exporter artifacts.
+This sample is configured to use standard OpenTelemetry OTLP/HTTP exporters to export traces and metrics to Google Cloud via the OTel Collector. Logs are written to stdout and shared files in Google Cloud structured JSON format (correlated with active OpenTelemetry trace context) and ingested via the OpenTelemetry Collector's filelog receiver. It does not rely on any custom Google Cloud exporter artifacts.
 
 The C++ code is an HTTP application with two endpoints:
 - `/multi` makes a few requests to `/single` on localhost
