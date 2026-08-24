@@ -54,11 +54,18 @@ opentelemetry::sdk::resource::Resource CreateResource(const std::string& project
   return opentelemetry::sdk::resource::Resource::Create(attributes);
 }
 
-opentelemetry::exporter::otlp::OtlpGrpcExporterOptions GetExporterOptions() {
+opentelemetry::exporter::otlp::OtlpGrpcExporterOptions GetExporterOptions(bool load_credentials) {
   opentelemetry::exporter::otlp::OtlpGrpcExporterOptions opts;
   opts.endpoint = GetEnv("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT",
                          GetEnv("OTEL_EXPORTER_OTLP_ENDPOINT", "telemetry.googleapis.com:443"));
-  opts.credentials = grpc::GoogleDefaultCredentials();
+  if (load_credentials) {
+    opts.credentials = grpc::GoogleDefaultCredentials();
+    if (!opts.credentials) {
+      throw std::runtime_error(
+          "Could not load Application Default Credentials. Run: "
+          "gcloud auth application-default login");
+    }
+  }
   return opts;
 }
 
