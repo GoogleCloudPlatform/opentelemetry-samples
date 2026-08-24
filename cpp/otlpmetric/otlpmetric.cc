@@ -18,6 +18,7 @@
 #include <cstdlib>
 #include <memory>
 #include <string>
+#include <unistd.h>
 
 #include <grpcpp/grpcpp.h>
 #include <grpcpp/security/credentials.h>
@@ -45,12 +46,17 @@ opentelemetry::sdk::resource::Resource CreateResource(const std::string& project
                          ? GetEnv("GOOGLE_CLOUD_PROJECT", GetEnv("GCP_PROJECT"))
                          : project_id;
 
+  // Google Managed Prometheus (GMP) maps resource attributes to prometheus_target:
+  // location, cluster, namespace, job, instance. Since opentelemetry-cpp lacks
+  // an automatic GCP resource detector, these attributes are configured explicitly.
+  std::string instance_id = GetEnv("INSTANCE", "instance-" + std::to_string(getpid()));
   opentelemetry::sdk::resource::ResourceAttributes attributes = {
-      {"service.name", "otlp-gcp-metric-sample"},
-      {"location", "us-central1"},
-      {"namespace", "default"},
-      {"job", "otlp-metric-sample"},
-      {"instance", "sample-instance"},
+      {"service.name", GetEnv("OTEL_SERVICE_NAME", "otlp-gcp-metric-sample")},
+      {"location", GetEnv("LOCATION", "us-central1")},
+      {"cluster", GetEnv("CLUSTER", "sample-cluster")},
+      {"namespace", GetEnv("NAMESPACE", "default")},
+      {"job", GetEnv("JOB", "otlp-metric-sample")},
+      {"instance", instance_id},
   };
   if (!proj.empty()) {
     attributes["gcp.project_id"] = proj;
