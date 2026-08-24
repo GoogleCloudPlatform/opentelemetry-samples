@@ -175,17 +175,9 @@ jobs:
       with:
         persist-credentials: false
     - name: Install dependencies
-      env:
-        DEBIAN_FRONTEND: noninteractive
-        NEEDRESTART_MODE: a
       run: |
-        sudo sed -i 's|mirror+file:/etc/apt/apt-mirrors.txt|http://archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list.d/*.sources /etc/apt/sources.list.d/* /etc/apt/sources.list 2>/dev/null || true
-        sudo sed -i 's/azure\.archive\.ubuntu\.com/archive.ubuntu.com/g' /etc/apt/sources.list /etc/apt/sources.list.d/* /etc/apt/apt-mirrors.txt 2>/dev/null || true
-        echo 'Acquire::Retries "3";' | sudo tee /etc/apt/apt.conf.d/80-retries
-        echo 'Acquire::http::Timeout "30";' | sudo tee -a /etc/apt/apt.conf.d/80-retries
-        echo 'Acquire::https::Timeout "30";' | sudo tee -a /etc/apt/apt.conf.d/80-retries
-        sudo DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a apt-get update && \
-        sudo DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a apt-get install -y --no-install-recommends \
+        sudo apt-get update && \
+        sudo apt-get install -y --no-install-recommends \
           cmake \
           build-essential \
           libgrpc++-dev \
