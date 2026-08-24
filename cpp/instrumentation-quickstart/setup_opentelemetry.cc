@@ -101,7 +101,7 @@ void SetupOpenTelemetry() {
   auto meter_selector = opentelemetry::sdk::metrics::MeterSelectorFactory::Create(
       "otel-quickstart-cpp", "", "");
   auto view = opentelemetry::sdk::metrics::ViewFactory::Create(
-      "", "", "s", opentelemetry::sdk::metrics::AggregationType::kHistogram, hist_config);
+      "", "", opentelemetry::sdk::metrics::AggregationType::kHistogram, hist_config);
   view_registry->AddView(std::move(instrument_selector), std::move(meter_selector), std::move(view));
 
   auto meter_provider = std::shared_ptr<opentelemetry::metrics::MeterProvider>(
