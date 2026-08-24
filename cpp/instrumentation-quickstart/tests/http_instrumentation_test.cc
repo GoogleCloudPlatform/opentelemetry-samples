@@ -35,6 +35,9 @@
 #include "opentelemetry/trace/propagation/http_trace_context.h"
 #include "opentelemetry/trace/provider.h"
 
+#include "opentelemetry/common/attribute_value.h"
+#include "opentelemetry/sdk/common/attribute_utils.h"
+
 #define ASSERT_TRUE(cond)                                                      \
   do {                                                                         \
     if (!(cond)) {                                                             \
@@ -55,9 +58,18 @@
 
 using opentelemetry::nostd::get;
 
+struct ExportedSpan {
+  std::string name;
+  opentelemetry::trace::SpanKind kind;
+  opentelemetry::trace::TraceId trace_id;
+  opentelemetry::trace::SpanId span_id;
+  opentelemetry::trace::SpanId parent_span_id;
+  std::unordered_map<std::string, opentelemetry::sdk::common::OwnedAttributeValue> attributes;
+};
+
 struct SpanStorage {
   std::mutex mutex;
-  std::vector<opentelemetry::sdk::trace::SpanData> spans;
+  std::vector<ExportedSpan> spans;
 };
 
 class TestSpanExporter : public opentelemetry::sdk::trace::SpanExporter {
@@ -76,11 +88,18 @@ class TestSpanExporter : public opentelemetry::sdk::trace::SpanExporter {
           std::unique_ptr<opentelemetry::sdk::trace::Recordable>>&
           spans) noexcept override {
     std::lock_guard<std::mutex> lock(storage_->mutex);
-    for (auto& recordable : spans) {
+    for (const auto& recordable : spans) {
       auto* data =
-          static_cast<opentelemetry::sdk::trace::SpanData*>(recordable.get());
+          static_cast<const opentelemetry::sdk::trace::SpanData*>(recordable.get());
       if (data) {
-        storage_->spans.push_back(*data);
+        ExportedSpan s;
+        s.name = std::string(data->GetName());
+        s.kind = data->GetSpanKind();
+        s.trace_id = data->GetTraceId();
+        s.span_id = data->GetSpanId();
+        s.parent_span_id = data->GetParentSpanId();
+        s.attributes = data->GetAttributes();
+        storage_->spans.push_back(s);
       }
     }
     return opentelemetry::sdk::common::ExportResult::kSuccess;
@@ -151,13 +170,13 @@ void TestHttpInstrumentation() {
   ASSERT_EQ(storage->spans.size(), 2);
 
   // Identify server and client spans
-  const opentelemetry::sdk::trace::SpanData* server_span = nullptr;
-  const opentelemetry::sdk::trace::SpanData* client_span = nullptr;
+  const ExportedSpan* server_span = nullptr;
+  const ExportedSpan* client_span = nullptr;
 
   for (const auto& span : storage->spans) {
-    if (span.GetSpanKind() == opentelemetry::trace::SpanKind::kServer) {
+    if (span.kind == opentelemetry::trace::SpanKind::kServer) {
       server_span = &span;
-    } else if (span.GetSpanKind() == opentelemetry::trace::SpanKind::kClient) {
+    } else if (span.kind == opentelemetry::trace::SpanKind::kClient) {
       client_span = &span;
     }
   }
@@ -166,8 +185,8 @@ void TestHttpInstrumentation() {
   ASSERT_TRUE(client_span != nullptr);
 
   // Verify server span properties & semantic convention attributes
-  ASSERT_EQ(server_span->GetName(), "GET /test-route");
-  const auto& server_attrs = server_span->GetAttributes();
+  ASSERT_EQ(server_span->name, "GET /test-route");
+  const auto& server_attrs = server_span->attributes;
   ASSERT_TRUE(server_attrs.find("http.request.method") != server_attrs.end());
   ASSERT_EQ(get<std::string>(server_attrs.at("http.request.method")),
             "GET");
@@ -179,8 +198,8 @@ void TestHttpInstrumentation() {
   ASSERT_EQ(get<int>(server_attrs.at("http.response.status_code")), 200);
 
   // Verify client span properties & semantic convention attributes
-  ASSERT_EQ(client_span->GetName(), "GET");
-  const auto& client_attrs = client_span->GetAttributes();
+  ASSERT_EQ(client_span->name, "GET");
+  const auto& client_attrs = client_span->attributes;
   ASSERT_TRUE(client_attrs.find("http.request.method") != client_attrs.end());
   ASSERT_EQ(get<std::string>(client_attrs.at("http.request.method")),
             "GET");
@@ -193,8 +212,8 @@ void TestHttpInstrumentation() {
 
   // Verify Distributed Trace Context propagation:
   // Server span must share the same trace ID and have client span as parent
-  ASSERT_EQ(server_span->GetTraceId(), client_span->GetTraceId());
-  ASSERT_EQ(server_span->GetParentSpanId(), client_span->GetSpanId());
+  ASSERT_EQ(server_span->trace_id, client_span->trace_id);
+  ASSERT_EQ(server_span->parent_span_id, client_span->span_id);
 
   opentelemetry_quickstart::SetGlobalHttpInstruments(nullptr);
 }
