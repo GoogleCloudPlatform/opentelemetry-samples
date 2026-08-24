@@ -24,6 +24,7 @@ https://cloud.google.com/trace/docs/iam#trace-roles
 2. Export configuration:
    ```bash
    export GOOGLE_CLOUD_PROJECT="your-project-id"
+   export OTEL_EXPORTER_OTLP_HEADERS="X-Goog-User-Project=$GOOGLE_CLOUD_PROJECT"
    export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="telemetry.googleapis.com:443"
    ```
 

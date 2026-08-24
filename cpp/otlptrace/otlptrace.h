@@ -30,7 +30,8 @@ opentelemetry::sdk::resource::Resource CreateResource(
     const std::string& project_id = "");
 
 // Resolves OTLP gRPC trace exporter options from environment variables and credentials.
-opentelemetry::exporter::otlp::OtlpGrpcExporterOptions GetExporterOptions();
+opentelemetry::exporter::otlp::OtlpGrpcExporterOptions GetExporterOptions(
+    bool load_credentials = true);
 
 // Creates and initializes the TracerProvider with batch span processor.
 std::shared_ptr<opentelemetry::trace::TracerProvider> CreateTracerProvider(

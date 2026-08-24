@@ -54,7 +54,7 @@ void TestResourceCreation() {
 }
 
 void TestExporterOptionsDefault() {
-  auto opts = otlpmetric_sample::GetExporterOptions();
+  auto opts = otlpmetric_sample::GetExporterOptions(/*load_credentials=*/false);
   ASSERT_TRUE(!opts.endpoint.empty());
   ASSERT_TRUE(opts.endpoint.find("telemetry.googleapis.com") != std::string::npos ||
               opts.endpoint.find("443") != std::string::npos);

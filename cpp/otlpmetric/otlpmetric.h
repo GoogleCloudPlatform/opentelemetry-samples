@@ -30,7 +30,8 @@ opentelemetry::sdk::resource::Resource CreateResource(
     const std::string& project_id = "");
 
 // Resolves OTLP gRPC metric exporter options from environment variables and credentials.
-opentelemetry::exporter::otlp::OtlpGrpcMetricExporterOptions GetExporterOptions();
+opentelemetry::exporter::otlp::OtlpGrpcMetricExporterOptions GetExporterOptions(
+    bool load_credentials = true);
 
 // Creates and initializes the MeterProvider with periodic exporting metric reader.
 std::shared_ptr<opentelemetry::metrics::MeterProvider> CreateMeterProvider(
