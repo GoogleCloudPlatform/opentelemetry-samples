@@ -48,7 +48,13 @@ int main(int argc, char** argv) {
 
   std::cout << "Flushing and shutting down meter provider..." << std::endl;
   auto* sdk_mp = static_cast<opentelemetry::sdk::metrics::MeterProvider*>(provider.get());
-  sdk_mp->ForceFlush();
+  if (sdk_mp != nullptr) {
+    sdk_mp->ForceFlush();
+    sdk_mp->Shutdown();
+  }
+  provider.reset();
+  opentelemetry::metrics::Provider::SetMeterProvider(
+      opentelemetry::nostd::shared_ptr<opentelemetry::metrics::MeterProvider>());
 
   std::cout << "Done!" << std::endl;
   return 0;

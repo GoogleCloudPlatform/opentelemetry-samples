@@ -101,13 +101,22 @@ void CleanUpOpenTelemetry() {
   auto* sdk_tp = dynamic_cast<opentelemetry::sdk::trace::TracerProvider*>(tracer_provider.get());
   if (sdk_tp != nullptr) {
     sdk_tp->ForceFlush();
+    sdk_tp->Shutdown();
   }
+  opentelemetry::trace::Provider::SetTracerProvider(
+      opentelemetry::nostd::shared_ptr<opentelemetry::trace::TracerProvider>());
 
   auto meter_provider = opentelemetry::metrics::Provider::GetMeterProvider();
   auto* sdk_mp = dynamic_cast<opentelemetry::sdk::metrics::MeterProvider*>(meter_provider.get());
   if (sdk_mp != nullptr) {
     sdk_mp->ForceFlush();
+    sdk_mp->Shutdown();
   }
+  opentelemetry::metrics::Provider::SetMeterProvider(
+      opentelemetry::nostd::shared_ptr<opentelemetry::metrics::MeterProvider>());
+
+  opentelemetry::context::propagation::GlobalTextMapPropagator::SetGlobalPropagator(
+      opentelemetry::nostd::shared_ptr<opentelemetry::context::propagation::TextMapPropagator>());
 }
 
 }  // namespace opentelemetry_quickstart

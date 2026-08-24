@@ -21,7 +21,7 @@ namespace opentelemetry_quickstart {
 // traces and metrics.
 void SetupOpenTelemetry();
 
-// Shuts down and flushes all registered OpenTelemetry providers.
+// Shuts down, flushes, and resets all registered OpenTelemetry providers and propagators.
 void CleanUpOpenTelemetry();
 
 }  // namespace opentelemetry_quickstart
