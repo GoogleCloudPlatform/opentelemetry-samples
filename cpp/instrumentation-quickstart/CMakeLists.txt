@@ -38,7 +38,7 @@ find_package(Threads REQUIRED)
 FetchContent_Declare(
     opentelemetry_cpp
     GIT_REPOSITORY https://github.com/open-telemetry/opentelemetry-cpp.git
-    GIT_TAG v1.14.2
+    GIT_TAG v1.28.0
 )
 FetchContent_MakeAvailable(opentelemetry_cpp)
 
