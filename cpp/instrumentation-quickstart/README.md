@@ -34,6 +34,9 @@ First create local credentials by running the following command:
 gcloud auth application-default login
 ```
 
+> [!CAUTION]
+> This method of authentication is not recommended for production environments.
+
 Executing this command will save your application credentials to:
 - Linux, macOS: `$HOME/.config/gcloud/application_default_credentials.json`
 - Windows: `%APPDATA%\gcloud\application_default_credentials.json`

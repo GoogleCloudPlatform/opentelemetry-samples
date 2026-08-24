@@ -31,7 +31,7 @@
 
 #include "otlpmetric.h"
 
-int main(int argc, char** argv) {
+int main() {
   // [START opentelemetry_otlp_grpc_auth_setup]
   auto resource = otlpmetric_sample::CreateResource();
   auto opts = otlpmetric_sample::GetExporterOptions();

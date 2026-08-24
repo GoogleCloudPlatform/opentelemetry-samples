@@ -28,6 +28,7 @@
 #include "opentelemetry/sdk/trace/batch_span_processor_options.h"
 #include "opentelemetry/sdk/trace/tracer_provider.h"
 #include "opentelemetry/trace/provider.h"
+#include "opentelemetry/trace/scope.h"
 
 namespace otlptrace_sample {
 
@@ -90,6 +91,7 @@ void EmitSampleTrace(opentelemetry::trace::Tracer* tracer) {
   auto span = tracer->StartSpan("sample-grpc-span");
   span->SetAttribute("sample.type", "direct-otlp-grpc-export");
   span->SetAttribute("auth.type", "google_default_credentials");
+  opentelemetry::trace::Scope scope(span);
   std::this_thread::sleep_for(std::chrono::milliseconds(50));
   span->End();
 }

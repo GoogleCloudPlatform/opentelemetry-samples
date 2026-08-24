@@ -124,10 +124,6 @@ void SetGlobalHttpInstruments(std::shared_ptr<HttpInstruments> instruments) {
   g_instruments = std::move(instruments);
 }
 
-std::shared_ptr<HttpInstruments> GetGlobalHttpInstruments() {
-  return g_instruments;
-}
-
 bool HttpClientGet(const std::string& host, const std::string& path) {
   auto tracer = opentelemetry::trace::Provider::GetTracerProvider()->GetTracer("otel-quickstart-cpp");
   opentelemetry::trace::StartSpanOptions options;

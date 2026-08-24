@@ -82,7 +82,7 @@ void HandleSingle(const httplib::Request& req, httplib::Response& res) {
 // [END opentelemetry_instrumentation_handle_single]
 
 // [START opentelemetry_instrumentation_main]
-int main(int argc, char** argv) {
+int main() {
   std::signal(SIGINT, SignalHandler);
   std::signal(SIGTERM, SignalHandler);
 
