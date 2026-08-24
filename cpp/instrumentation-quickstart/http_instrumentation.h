@@ -71,7 +71,6 @@ std::shared_ptr<HttpInstruments> CreateHttpInstruments(
     const std::string& meter_name = "otel-quickstart-cpp");
 
 void SetGlobalHttpInstruments(std::shared_ptr<HttpInstruments> instruments);
-std::shared_ptr<HttpInstruments> GetGlobalHttpInstruments();
 
 // HTTP client wrapper with automatic trace context propagation and HTTP client metrics
 bool HttpClientGet(const std::string& host, const std::string& path);

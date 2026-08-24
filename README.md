@@ -13,6 +13,14 @@ This project provides practical examples across multiple programming languages t
 
 ## Repository Structure
 
+- **[cpp](./cpp)**: C++ samples.
+  - **[instrumentation-quickstart](./cpp/instrumentation-quickstart)**: OpenTelemetry C++ instrumentation quickstart exporting traces, metrics, and logs to Google Cloud via OTel Collector.
+  - **[otlpmetric](./cpp/otlpmetric)**: Example showing OTLP metric exporter being used for metrics export to GCP.
+  - **[otlptrace](./cpp/otlptrace)**: Example showing OTLP exporter being used for traces export to GCP.
+- **[golang](./golang)**: Go samples.
+  - **[metric/otlpgrpc](./golang/metric/otlpgrpc)**: Example for OTLP Metric exporter via gRPC.
+  - **[trace/otlpgrpc](./golang/trace/otlpgrpc)**: Example showing OTLP exporter being used for traces export to GCP via gRPC.
+  - **[trace/otlphttp](./golang/trace/otlphttp)**: Example showing OTLP exporter being used for traces export to GCP via HTTP.
 - **[java](./java)**: Java samples.
   - **[autoconf-auth-extension](./java/autoconf-auth-extension)**: Example showing OTLP exporter with GCP Auth Extension for traces and metrics.
   - **[instrumentation-quickstart](./java/instrumentation-quickstart)**: OpenTelemetry Spring Boot auto-instrumentation quickstart using the Java Agent and OTel Collector.
@@ -22,14 +30,6 @@ This project provides practical examples across multiple programming languages t
   - **[otlpmetrics-function](./java/otlpmetrics-function)**: Example showing how to export OpenTelemetry metrics from a Google Cloud Run Function to Google Managed Prometheus using OpenTelemetry Collector running as a sidecar.
   - **[otlptrace](./java/otlptrace)**: Example showing OTLP exporter being used for traces export to GCP.
   - **[resource](./java/resource)**: Examples for showing resource detection in various GCP environments.
-- **[cpp](./cpp)**: C++ samples.
-  - **[instrumentation-quickstart](./cpp/instrumentation-quickstart)**: OpenTelemetry C++ instrumentation quickstart exporting traces, metrics, and logs to Google Cloud via OTel Collector.
-  - **[otlpmetric](./cpp/otlpmetric)**: Example showing OTLP metric exporter being used for metrics export to GCP.
-  - **[otlptrace](./cpp/otlptrace)**: Example showing OTLP exporter being used for traces export to GCP.
-- **[golang](./golang)**: Go samples.
-  - **[metric/otlpgrpc](./golang/metric/otlpgrpc)**: Example for OTLP Metric exporter via gRPC.
-  - **[trace/otlpgrpc](./golang/trace/otlpgrpc)**: Example showing OTLP exporter being used for traces export to GCP via gRPC.
-  - **[trace/otlphttp](./golang/trace/otlphttp)**: Example showing OTLP exporter being used for traces export to GCP via HTTP.
 - **[javascript](./javascript)**: JavaScript samples.
   - **[instrumentation-quickstart](./javascript/instrumentation-quickstart)**: OpenTelemetry Node.js auto-instrumentation quickstart using Fastify and OTel Collector.
   - **[otlpmetricexport](./javascript/otlpmetricexport)**: Example showing OTLP Metric exporter via gRPC.
