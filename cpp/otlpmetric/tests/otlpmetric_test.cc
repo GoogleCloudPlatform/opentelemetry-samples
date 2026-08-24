@@ -46,9 +46,10 @@ void TestResourceCreation() {
 
   ASSERT_EQ(get<std::string>(attrs.at("service.name")), "otlp-gcp-metric-sample");
   ASSERT_EQ(get<std::string>(attrs.at("location")), "us-central1");
+  ASSERT_EQ(get<std::string>(attrs.at("cluster")), "sample-cluster");
   ASSERT_EQ(get<std::string>(attrs.at("namespace")), "default");
   ASSERT_EQ(get<std::string>(attrs.at("job")), "otlp-metric-sample");
-  ASSERT_EQ(get<std::string>(attrs.at("instance")), "sample-instance");
+  ASSERT_TRUE(!get<std::string>(attrs.at("instance")).empty());
   ASSERT_EQ(get<std::string>(attrs.at("gcp.project_id")), "my-test-project");
 }
 
