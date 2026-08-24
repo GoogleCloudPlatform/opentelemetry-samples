@@ -26,9 +26,14 @@
 #include "opentelemetry/exporters/otlp/otlp_http_metric_exporter.h"
 #include "opentelemetry/exporters/otlp/otlp_http_metric_exporter_options.h"
 #include "opentelemetry/metrics/provider.h"
+#include "opentelemetry/sdk/metrics/aggregation/histogram_aggregation.h"
 #include "opentelemetry/sdk/metrics/export/periodic_exporting_metric_reader.h"
 #include "opentelemetry/sdk/metrics/export/periodic_exporting_metric_reader_options.h"
 #include "opentelemetry/sdk/metrics/meter_provider.h"
+#include "opentelemetry/sdk/metrics/view/instrument_selector_factory.h"
+#include "opentelemetry/sdk/metrics/view/meter_selector_factory.h"
+#include "opentelemetry/sdk/metrics/view/view_factory.h"
+#include "opentelemetry/sdk/metrics/view/view_registry.h"
 #include "opentelemetry/sdk/resource/resource.h"
 #include "opentelemetry/sdk/trace/batch_span_processor.h"
 #include "opentelemetry/sdk/trace/batch_span_processor_options.h"
@@ -87,9 +92,20 @@ void SetupOpenTelemetry() {
       new opentelemetry::sdk::metrics::PeriodicExportingMetricReader(
           std::move(metric_exporter), reader_opts));
 
+  auto view_registry = std::make_unique<opentelemetry::sdk::metrics::ViewRegistry>();
+  auto hist_config = std::make_shared<opentelemetry::sdk::metrics::HistogramAggregationConfig>();
+  hist_config->boundaries_ = {0.005, 0.01,  0.025, 0.05, 0.075, 0.1, 0.25,
+                              0.5,   0.75, 1.0,   2.5,  5.0,   7.5, 10.0};
+  auto instrument_selector = opentelemetry::sdk::metrics::InstrumentSelectorFactory::Create(
+      opentelemetry::sdk::metrics::InstrumentType::kHistogram, "http.*.request.duration", "s");
+  auto meter_selector = opentelemetry::sdk::metrics::MeterSelectorFactory::Create(
+      "otel-quickstart-cpp", "", "");
+  auto view = opentelemetry::sdk::metrics::ViewFactory::Create(
+      "", "", "s", opentelemetry::sdk::metrics::AggregationType::kHistogram, hist_config);
+  view_registry->AddView(std::move(instrument_selector), std::move(meter_selector), std::move(view));
+
   auto meter_provider = std::shared_ptr<opentelemetry::metrics::MeterProvider>(
-      new opentelemetry::sdk::metrics::MeterProvider(
-          std::make_unique<opentelemetry::sdk::metrics::ViewRegistry>(), resource));
+      new opentelemetry::sdk::metrics::MeterProvider(std::move(view_registry), resource));
   static_cast<opentelemetry::sdk::metrics::MeterProvider*>(meter_provider.get())
       ->AddMetricReader(std::move(metric_reader));
   opentelemetry::metrics::Provider::SetMeterProvider(meter_provider);
