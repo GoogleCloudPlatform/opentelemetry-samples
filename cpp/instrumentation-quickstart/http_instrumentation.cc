@@ -236,8 +236,6 @@ void RegisterInstrumentedGet(
               {"http.response.status_code", status_code},
               {"network.protocol.name", "http"},
               {"network.protocol.version", "1.1"},
-              {"server.address", server_address},
-              {"server.port", server_port},
               {"url.scheme", "http"},
           },
           opentelemetry::context::RuntimeContext::GetCurrent());
