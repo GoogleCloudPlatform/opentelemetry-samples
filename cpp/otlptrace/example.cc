@@ -48,7 +48,13 @@ int main(int argc, char** argv) {
 
   std::cout << "Flushing and shutting down tracer provider..." << std::endl;
   auto* sdk_tp = static_cast<opentelemetry::sdk::trace::TracerProvider*>(provider.get());
-  sdk_tp->ForceFlush();
+  if (sdk_tp != nullptr) {
+    sdk_tp->ForceFlush();
+    sdk_tp->Shutdown();
+  }
+  provider.reset();
+  opentelemetry::trace::Provider::SetTracerProvider(
+      opentelemetry::nostd::shared_ptr<opentelemetry::trace::TracerProvider>());
 
   std::cout << "Done!" << std::endl;
   return 0;
