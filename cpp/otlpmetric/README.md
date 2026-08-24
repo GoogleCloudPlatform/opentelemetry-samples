@@ -8,6 +8,7 @@ This sample demonstrates how to export OpenTelemetry metrics directly from a C++
 - C++17 compatible compiler (GCC 9+, Clang 10+)
 - `gRPC` C++ development libraries (`libgrpc++-dev`, `protobuf-compiler-grpc`)
 - `Protobuf` development libraries (`libprotobuf-dev`, `protobuf-compiler`)
+- `opentelemetry-cpp` v1.28.0 (automatically downloaded via CMake `FetchContent`)
 
 ## Permissions
 
