@@ -33,11 +33,20 @@ public class OTLPIAPExample {
 
     String resolvedCollectorUrl = System.getProperty("otel.exporter.otlp.endpoint");
     if (resolvedCollectorUrl == null || resolvedCollectorUrl.isEmpty()) {
+      resolvedCollectorUrl = System.getenv("OTEL_EXPORTER_OTLP_ENDPOINT");
+    }
+    if (resolvedCollectorUrl == null || resolvedCollectorUrl.isEmpty()) {
       resolvedCollectorUrl = System.getenv("COLLECTOR_URL");
     }
     final String collectorUrl = resolvedCollectorUrl;
 
-    String resolvedIapClientId = System.getProperty("google.otel.auth.id.token.audience");
+    String resolvedIapClientId = System.getProperty("google.auth.id.token.audience");
+    if (resolvedIapClientId == null || resolvedIapClientId.isEmpty()) {
+      resolvedIapClientId = System.getenv("GOOGLE_AUTH_ID_TOKEN_AUDIENCE");
+    }
+    if (resolvedIapClientId == null || resolvedIapClientId.isEmpty()) {
+      resolvedIapClientId = System.getProperty("google.otel.auth.id.token.audience");
+    }
     if (resolvedIapClientId == null || resolvedIapClientId.isEmpty()) {
       resolvedIapClientId = System.getenv("IAP_CLIENT_ID");
     }
@@ -45,12 +54,12 @@ public class OTLPIAPExample {
 
     if (collectorUrl == null || collectorUrl.isEmpty()) {
       System.err.println(
-          "Error: Collector URL is not set (via otel.exporter.otlp.endpoint property or COLLECTOR_URL env var).");
+          "Error: Collector URL is not set (via otel.exporter.otlp.endpoint property or OTEL_EXPORTER_OTLP_ENDPOINT env var).");
       System.exit(1);
     }
     if (iapClientId == null || iapClientId.isEmpty()) {
       System.err.println(
-          "Error: IAP Client ID is not set (via google.otel.auth.id.token.audience property or IAP_CLIENT_ID env var).");
+          "Error: IAP Client ID is not set (via google.auth.id.token.audience property or GOOGLE_AUTH_ID_TOKEN_AUDIENCE env var).");
       System.exit(1);
     }
 
@@ -61,7 +70,8 @@ public class OTLPIAPExample {
 
     // Initialize using Autoconfigure. The GCP Auth Extension will be loaded from
     // the classpath.
-    OpenTelemetrySdk openTelemetrySdk = AutoConfiguredOpenTelemetrySdk.initialize().getOpenTelemetrySdk();
+    OpenTelemetrySdk openTelemetrySdk =
+        AutoConfiguredOpenTelemetrySdk.initialize().getOpenTelemetrySdk();
 
     // Generate sample traces and metrics
     Tracer tracer = openTelemetrySdk.getTracer(INSTRUMENTATION_SCOPE_NAME);
@@ -79,11 +89,12 @@ public class OTLPIAPExample {
     }
 
     System.out.println("Sending test metric...");
-    LongCounter counter = meter
-        .counterBuilder("iap_test_counter")
-        .setDescription("A counter to test metrics export through IAP")
-        .setUnit("1")
-        .build();
+    LongCounter counter =
+        meter
+            .counterBuilder("iap_test_counter")
+            .setDescription("A counter to test metrics export through IAP")
+            .setUnit("1")
+            .build();
     counter.add(1);
 
     // Clean shutdown to flush all buffered metrics and spans

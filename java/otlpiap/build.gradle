@@ -37,15 +37,15 @@ dependencies {
 }
 
 def autoconf_config = [
-	"-Dotel.exporter.otlp.endpoint=" + (System.getenv('COLLECTOR_URL') ?: ''),
+	"-Dotel.exporter.otlp.endpoint=" + (System.getenv('OTEL_EXPORTER_OTLP_ENDPOINT') ?: ''),
 	'-Dotel.traces.exporter=otlp',
 	'-Dotel.metrics.exporter=otlp',
 	'-Dotel.logs.exporter=none',
 	'-Dotel.service.name=otlpiap-example',
 	'-Dotel.exporter.otlp.protocol=http/protobuf',
 	'-Dotel.java.global-autoconfigure.enabled=true',
-	'-Dgoogle.otel.auth.token.type=id_token',
-	"-Dgoogle.otel.auth.id.token.audience=" + (System.getenv('IAP_CLIENT_ID') ?: '')
+	'-Dgoogle.auth.token.type=id_token',
+	"-Dgoogle.auth.id.token.audience=" + (System.getenv('GOOGLE_AUTH_ID_TOKEN_AUDIENCE') ?: '')
 ]
 
 application {

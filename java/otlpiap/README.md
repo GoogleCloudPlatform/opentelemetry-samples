@@ -5,7 +5,7 @@ This sample relies on the [gcp-auth-extension](https://github.com/open-telemetry
 
 ## Architecture & How It Works
 
-1. **Client Application (Java)**: Generates traces and metrics. It leverages the OpenTelemetry SDK autoconfiguration alongside the [gcp-auth-extension](https://github.com/open-telemetry/opentelemetry-java-contrib/tree/main/gcp-auth-extension) to automatically fetch, cache, and attach Google OIDC ID tokens targeting the IAP OAuth Client ID (`google.otel.auth.token.type=id_token` and `google.otel.auth.id.token.audience`). The extension injects the token into the `Authorization: Bearer <ID_TOKEN>` header for all OTLP/HTTP requests sent to the Collector without requiring manual token management in application code.
+1. **Client Application (Java)**: Generates traces and metrics. It leverages the OpenTelemetry SDK autoconfiguration alongside the [gcp-auth-extension](https://github.com/open-telemetry/opentelemetry-java-contrib/tree/main/gcp-auth-extension) to automatically fetch, cache, and attach Google OIDC ID tokens targeting the IAP OAuth Client ID (`google.auth.token.type=id_token` and `google.auth.id.token.audience` / `GOOGLE_AUTH_ID_TOKEN_AUDIENCE`). The extension injects the token into the `Authorization: Bearer <ID_TOKEN>` header for all OTLP/HTTP requests sent to the Collector without requiring manual token management in application code.
 2. **Identity-Aware Proxy (IAP)**: Secured directly on the Cloud Run service (`otel-collector-iap`). It intercepts incoming requests, validates the Google-signed ID token, and verifies that the calling service account has the **IAP-secured Web App User** (`roles/iap.httpsResourceAccessor`) role.
 3. **Cloud Run Service (`otel-collector-iap`)**: Runs the OpenTelemetry Collector Contrib container. It is configured to receive OTLP/HTTP traffic on the container port allocated by Cloud Run.
 4. **OpenTelemetry Collector**:
@@ -26,10 +26,6 @@ Before running the sample, ensure you have:
 3. A Google Cloud project set as your active project:
    ```shell
    gcloud config set project YOUR_PROJECT_ID
-   ```
-4. Configure the `GOOGLE_CLOUD_PROJECT` environment variable for the [gcp-auth-extension](https://github.com/open-telemetry/opentelemetry-java-contrib/tree/main/gcp-auth-extension):
-   ```shell
-   export GOOGLE_CLOUD_PROJECT=YOUR_PROJECT_ID
    ```
 ---
 
@@ -93,7 +89,7 @@ To configure this and auto-generate the Client ID:
 4. In the side panel, change the setting to use a **Custom OAuth client**. If you do not have one, you can choose to auto-generate the OAuth 2.0 Client ID.
 5. Once configured, navigate to the [Credentials page](https://console.cloud.google.com/apis/credentials) in the Google Cloud Console.
 6. Under the **OAuth 2.0 Client IDs** section, locate the client ID associated with your IAP service (typically named after your Cloud Run service or IAP configuration).
-7. Copy the **Client ID** string (e.g., `568958109999-xxxxxx.apps.googleusercontent.com`). This is the value you will set as the `IAP_CLIENT_ID` environment variable when running the Java app.
+7. Copy the **Client ID** string (e.g., `568958109999-xxxxxx.apps.googleusercontent.com`). This is the value you will set as the `GOOGLE_AUTH_ID_TOKEN_AUDIENCE` environment variable when running the Java app.
 
 ### 3. Configure OAuth Client for programmatic access
 To allow programmatic access using the specific Client ID, you must add it to the allowlist for programmatic access on the IAP resource.
@@ -132,11 +128,11 @@ This method uses your local `gcloud` login to automatically impersonate the clie
 
 2. Retrieve the required values and set the environment variables:
    ```shell
-   export COLLECTOR_URL="<YOUR_COLLECTOR_URL>"
-   export IAP_CLIENT_ID="<YOUR_IAP_CLIENT_ID>"
+   export OTEL_EXPORTER_OTLP_ENDPOINT="<YOUR_COLLECTOR_URL>"
+   export GOOGLE_AUTH_ID_TOKEN_AUDIENCE="<YOUR_IAP_CLIENT_ID>"
    ```
-   * **COLLECTOR_URL**: Use the `OTel Collector URL` value output at the end of the `deploy-otel-collector-iap.sh` execution.
-   * **IAP_CLIENT_ID**: You must configure custom OAuth 2.0 and retrieve the Client ID manually from the Google Cloud Console:
+   * **OTEL_EXPORTER_OTLP_ENDPOINT**: Use the `OTel Collector URL` value output at the end of the `deploy-otel-collector-iap.sh` execution.
+   * **GOOGLE_AUTH_ID_TOKEN_AUDIENCE**: You must configure custom OAuth 2.0 and retrieve the Client ID manually from the Google Cloud Console:
 
      > [!IMPORTANT]
      > By default, the deployed IAP service uses Google Managed OAuth. This must be changed to custom OAuth 2.0 to enable programmatic access from your client application.
@@ -161,10 +157,10 @@ Note: You need to update the `deploy-otel-collector-iap.sh` script to uncomment 
 1. Set the environment variables pointing to your downloaded key and IAP configuration:
    ```shell
    export GOOGLE_APPLICATION_CREDENTIALS=client-sa-key.json
-   export COLLECTOR_URL="<YOUR_COLLECTOR_URL>"
-   export IAP_CLIENT_ID="<YOUR_IAP_CLIENT_ID>"
+   export OTEL_EXPORTER_OTLP_ENDPOINT="<YOUR_COLLECTOR_URL>"
+   export GOOGLE_AUTH_ID_TOKEN_AUDIENCE="<YOUR_IAP_CLIENT_ID>"
    ```
-   *(See step 2 of Option A for instructions on how to find the `COLLECTOR_URL` and `IAP_CLIENT_ID` values)*
+   *(See step 2 of Option A for instructions on how to find the `OTEL_EXPORTER_OTLP_ENDPOINT` and `GOOGLE_AUTH_ID_TOKEN_AUDIENCE` values)*
 
 
 2. Run the Java application using Gradle from the repository root:
