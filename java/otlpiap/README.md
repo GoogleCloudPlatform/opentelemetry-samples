@@ -48,7 +48,6 @@ Upon successful completion, this script will:
 - Deploy the Collector to Cloud Run with direct IAP enabled.
 - Grant `otel-client-sa` permissions to invoke the service (via `roles/iap.httpsResourceAccessor`) and view settings (via `roles/iap.settingsAdmin`).
 - Grant the active user permissions to impersonate `otel-client-sa` (via `roles/iam.serviceAccountTokenCreator`).
-- Generate and download `client-sa-key.json` to the current directory (*Optional, will require uncommenting relevant steps from `deploy-otel-collector-iap.sh` script*).
 - Output the URL of the deployed Cloud Run Collector.
 
 ### Post-Deployment: Grant Cloud Run Invoker permission to IAP service account
