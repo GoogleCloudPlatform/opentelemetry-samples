@@ -130,12 +130,7 @@ gcloud projects add-iam-policy-binding "$PROJECT_ID" \
     --condition=None \
     --quiet
 
-# 9. Create Client SA Key (Optional, for key-based authentication)
-# echo "Generating client service account key (optional)..."
-# gcloud iam service-accounts keys create client-sa-key.json \
-#     --iam-account="$CLIENT_SA"
-
-# 10. Get Output Values
+# 9. Get Output Values
 COLLECTOR_URL=$(gcloud run services describe "$SERVICE_NAME" --region="$REGION" --format="value(status.url)")
 
 echo "=========================================================="

@@ -57,10 +57,4 @@ if gcloud iam service-accounts describe "$CLIENT_SA" &>/dev/null; then
     gcloud iam service-accounts delete "$CLIENT_SA" --quiet
 fi
 
-# 4. Clean up local key file
-if [ -f "client-sa-key.json" ]; then
-    echo "Deleting local client-sa-key.json..."
-    rm "client-sa-key.json"
-fi
-
 echo "Cleanup completed successfully!"

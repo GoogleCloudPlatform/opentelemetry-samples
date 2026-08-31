@@ -15,36 +15,17 @@
  */
 package com.google.cloud.opentelemetry.samples.otlpiap;
 
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toMap;
-
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.auth.oauth2.IdTokenCredentials;
-import com.google.auth.oauth2.IdTokenProvider;
 import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.Meter;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Scope;
-import io.opentelemetry.exporter.otlp.http.metrics.OtlpHttpMetricExporter;
-import io.opentelemetry.exporter.otlp.http.trace.OtlpHttpSpanExporter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 public class OTLPIAPExample {
   private static final String INSTRUMENTATION_SCOPE_NAME = OTLPIAPExample.class.getName();
-  private static final String IAM_SCOPE = "https://www.googleapis.com/auth/iam";
-  private static final String EMAIL_SCOPE = "https://www.googleapis.com/auth/userinfo.email";
-  private static final String CLOUD_PLATFORM_SCOPE =
-      "https://www.googleapis.com/auth/cloud-platform";
 
   public static void main(String[] args) throws Exception {
     // Enable detailed logging for OpenTelemetry to debug export issues
@@ -52,84 +33,38 @@ public class OTLPIAPExample {
 
     String resolvedCollectorUrl = System.getProperty("otel.exporter.otlp.endpoint");
     if (resolvedCollectorUrl == null || resolvedCollectorUrl.isEmpty()) {
-      resolvedCollectorUrl = System.getenv("COLLECTOR_URL");
+      resolvedCollectorUrl = System.getenv("OTEL_EXPORTER_OTLP_ENDPOINT");
     }
     final String collectorUrl = resolvedCollectorUrl;
 
-    String resolvedIapClientId = System.getProperty("iap.client.id");
+    String resolvedIapClientId = System.getProperty("google.auth.id.token.audience");
     if (resolvedIapClientId == null || resolvedIapClientId.isEmpty()) {
-      resolvedIapClientId = System.getenv("IAP_CLIENT_ID");
+      resolvedIapClientId = System.getenv("GOOGLE_AUTH_ID_TOKEN_AUDIENCE");
     }
     final String iapClientId = resolvedIapClientId;
 
     if (collectorUrl == null || collectorUrl.isEmpty()) {
       System.err.println(
-          "Error: Collector URL is not set (via otel.exporter.otlp.endpoint property or COLLECTOR_URL env var).");
+          "Error: Collector URL is not set (via otel.exporter.otlp.endpoint property or OTEL_EXPORTER_OTLP_ENDPOINT env var).");
       System.exit(1);
     }
     if (iapClientId == null || iapClientId.isEmpty()) {
       System.err.println(
-          "Error: IAP Client ID is not set (via iap.client.id property or IAP_CLIENT_ID env var).");
+          "Error: IAP Client ID is not set (via google.auth.id.token.audience property or GOOGLE_AUTH_ID_TOKEN_AUDIENCE env var).");
       System.exit(1);
     }
 
-    System.out.println("Initializing OpenTelemetry SDK with IAP authentication...");
+    System.out.println(
+        "Initializing OpenTelemetry SDK with IAP authentication (using GCP Auth Extension)...");
     System.out.println("Collector URL: " + collectorUrl);
     System.out.println("IAP Client ID: " + iapClientId);
 
-    // 1. Setup ID Token credentials using Application Default Credentials (ADC)
-    GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
-
-    if (credentials.createScopedRequired()) {
-      credentials =
-          credentials.createScoped(
-              Arrays.asList(IAM_SCOPE, EMAIL_SCOPE, CLOUD_PLATFORM_SCOPE, "openid"));
-    }
-
-    if (!(credentials instanceof IdTokenProvider)) {
-      throw new IllegalStateException(
-          "Default credentials do not support generating ID tokens. "
-              + "Please ensure you have authenticated with a Service Account, or configured impersonation via gcloud.");
-    }
-
-    IdTokenCredentials idTokenCredentials =
-        IdTokenCredentials.newBuilder()
-            .setIdTokenProvider((IdTokenProvider) credentials)
-            .setTargetAudience(iapClientId)
-            .setOptions(asList(IdTokenProvider.Option.INCLUDE_EMAIL))
-            .build();
-
-    // Supplier that will automatically refresh and supply the authorization header
-    Supplier<Map<String, String>> headerSupplier =
-        () -> {
-          try {
-            idTokenCredentials.refreshIfExpired();
-            return getRequiredHeaderMap(idTokenCredentials);
-          } catch (IOException e) {
-            throw new RuntimeException("Failed to refresh ID token for IAP", e);
-          }
-        };
-
-    // 2. Configure AutoConfiguredOpenTelemetrySdk with custom HTTP exporters that include IAP
-    // headers
+    // Initialize using Autoconfigure. The GCP Auth Extension will be loaded from
+    // the classpath.
     OpenTelemetrySdk openTelemetrySdk =
-        AutoConfiguredOpenTelemetrySdk.builder()
-            .addSpanExporterCustomizer(
-                (existingExporter, config) ->
-                    OtlpHttpSpanExporter.builder()
-                        .setEndpoint(collectorUrl + "/v1/traces")
-                        .setHeaders(headerSupplier)
-                        .build())
-            .addMetricExporterCustomizer(
-                (existingExporter, config) ->
-                    OtlpHttpMetricExporter.builder()
-                        .setEndpoint(collectorUrl + "/v1/metrics")
-                        .setHeaders(headerSupplier)
-                        .build())
-            .build()
-            .getOpenTelemetrySdk();
+        AutoConfiguredOpenTelemetrySdk.initialize().getOpenTelemetrySdk();
 
-    // 3. Generate sample traces and metrics
+    // Generate sample traces and metrics
     Tracer tracer = openTelemetrySdk.getTracer(INSTRUMENTATION_SCOPE_NAME);
     Meter meter = openTelemetrySdk.getMeter(INSTRUMENTATION_SCOPE_NAME);
 
@@ -153,36 +88,11 @@ public class OTLPIAPExample {
             .build();
     counter.add(1);
 
-    // 4. Clean shutdown to flush all buffered metrics and spans
+    // Clean shutdown to flush all buffered metrics and spans
     System.out.println("Flushing and shutting down OpenTelemetry SDK...");
     openTelemetrySdk.getSdkTracerProvider().shutdown().join(10, TimeUnit.SECONDS);
     openTelemetrySdk.getSdkMeterProvider().shutdown().join(10, TimeUnit.SECONDS);
     System.out.println("Shutdown complete. Telemetry exported successfully!");
-  }
-
-  private static Map<String, String> getRequiredHeaderMap(IdTokenCredentials credentials) {
-    Map<String, List<String>> gcpHeaders;
-    try {
-      // this also refreshes the credentials, if required
-      gcpHeaders = credentials.getRequestMetadata();
-    } catch (IOException e) {
-      throw new RuntimeException("Error getting request metadata from ADC", e);
-    }
-    Map<String, String> flattenedHeaders =
-        gcpHeaders.entrySet().stream()
-            .collect(
-                toMap(
-                    Map.Entry::getKey,
-                    entry ->
-                        entry.getValue().stream()
-                            .filter(Objects::nonNull) // Filter nulls
-                            .filter(s -> !s.isEmpty()) // Filter empty strings
-                            .collect(joining(","))));
-
-    // flattenedHeaders.putIfAbsent("Proxy-Authorization", "Bearer " +
-    // credentials.getAccessToken().getTokenValue());
-    System.out.println("Request Headers: " + flattenedHeaders);
-    return flattenedHeaders;
   }
 
   private static void setupDebugLogging(boolean enableDebugLogs) {
