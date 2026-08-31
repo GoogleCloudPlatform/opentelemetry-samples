@@ -59,9 +59,9 @@ public class OTLPIAPExample {
     System.out.println("Collector URL: " + collectorUrl);
     System.out.println("IAP Client ID: " + iapClientId);
 
-    // Initialize using Autoconfigure. The GCP Auth Extension will be loaded from the classpath.
-    OpenTelemetrySdk openTelemetrySdk =
-        AutoConfiguredOpenTelemetrySdk.initialize().getOpenTelemetrySdk();
+    // Initialize using Autoconfigure. The GCP Auth Extension will be loaded from
+    // the classpath.
+    OpenTelemetrySdk openTelemetrySdk = AutoConfiguredOpenTelemetrySdk.initialize().getOpenTelemetrySdk();
 
     // Generate sample traces and metrics
     Tracer tracer = openTelemetrySdk.getTracer(INSTRUMENTATION_SCOPE_NAME);
@@ -79,12 +79,11 @@ public class OTLPIAPExample {
     }
 
     System.out.println("Sending test metric...");
-    LongCounter counter =
-        meter
-            .counterBuilder("iap_test_counter")
-            .setDescription("A counter to test metrics export through IAP")
-            .setUnit("1")
-            .build();
+    LongCounter counter = meter
+        .counterBuilder("iap_test_counter")
+        .setDescription("A counter to test metrics export through IAP")
+        .setUnit("1")
+        .build();
     counter.add(1);
 
     // Clean shutdown to flush all buffered metrics and spans

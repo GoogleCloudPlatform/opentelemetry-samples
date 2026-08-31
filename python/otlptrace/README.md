@@ -8,7 +8,7 @@ Install the dependencies and libraries required to run the samples:
 
 ```sh
 # Move to the sample repository
-cd samples/otlptrace
+cd python/otlptrace
 
 pip install -r requirements.txt
 ```
@@ -25,7 +25,7 @@ gcloud auth application-default login
 # export necessary OTEL environment variables
 export OTEL_RESOURCE_ATTRIBUTES="gcp.project_id=<project-id>"
 
-# from the samples/otlptrace repository
+# from the python/otlptrace directory
 python3 example_grpc.py
 ```
 Other variations of the sample:

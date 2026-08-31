@@ -55,12 +55,20 @@ echo "Checking/creating service accounts..."
 COLLECTOR_SA="otel-collector-sa@$PROJECT_ID.iam.gserviceaccount.com"
 CLIENT_SA="otel-client-sa@$PROJECT_ID.iam.gserviceaccount.com"
 
+SA_CREATED=false
 if ! gcloud iam service-accounts describe "$COLLECTOR_SA" &>/dev/null; then
     gcloud iam service-accounts create otel-collector-sa --display-name="OTel Collector IAP Service Account"
+    SA_CREATED=true
 fi
 
 if ! gcloud iam service-accounts describe "$CLIENT_SA" &>/dev/null; then
     gcloud iam service-accounts create otel-client-sa --display-name="OTel Client IAP Service Account"
+    SA_CREATED=true
+fi
+
+if [ "$SA_CREATED" = true ]; then
+    echo "Waiting for service account propagation..."
+    sleep 10
 fi
 
 # 4. Grant roles to Collector Service Account
@@ -75,6 +83,9 @@ gcloud projects add-iam-policy-binding "$PROJECT_ID" \
     --role="roles/monitoring.metricWriter" \
     --condition=None \
     --quiet
+
+echo "Waiting for IAM role changes to propagate..."
+sleep 10
 
 # 5. Build and Push Collector Image
 echo "Building and pushing collector image..."
