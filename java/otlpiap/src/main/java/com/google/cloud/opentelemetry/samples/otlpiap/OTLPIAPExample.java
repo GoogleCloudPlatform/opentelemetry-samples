@@ -35,9 +35,6 @@ public class OTLPIAPExample {
     if (resolvedCollectorUrl == null || resolvedCollectorUrl.isEmpty()) {
       resolvedCollectorUrl = System.getenv("OTEL_EXPORTER_OTLP_ENDPOINT");
     }
-    if (resolvedCollectorUrl == null || resolvedCollectorUrl.isEmpty()) {
-      resolvedCollectorUrl = System.getenv("COLLECTOR_URL");
-    }
     final String collectorUrl = resolvedCollectorUrl;
 
     String resolvedIapClientId = System.getProperty("google.auth.id.token.audience");
@@ -46,9 +43,6 @@ public class OTLPIAPExample {
     }
     if (resolvedIapClientId == null || resolvedIapClientId.isEmpty()) {
       resolvedIapClientId = System.getProperty("google.otel.auth.id.token.audience");
-    }
-    if (resolvedIapClientId == null || resolvedIapClientId.isEmpty()) {
-      resolvedIapClientId = System.getenv("IAP_CLIENT_ID");
     }
     final String iapClientId = resolvedIapClientId;
 
