@@ -31,7 +31,7 @@ Before running the sample, ensure you have:
 
 ## Setup & Deployment
 
-The sample includes a shell script `deploy-otel-collector-iap.sh` that automates the provisioning of the Cloud Run service, setting up the Collector configuration, creating necessary service accounts, enabling direct IAP, and downloading the client service account credentials.
+The sample includes a shell script `deploy-otel-collector-iap.sh` that automates the provisioning of the Cloud Run service, setting up the Collector configuration, creating necessary service accounts, and enabling direct IAP.
 
 Run the deployment script from this directory:
 
@@ -114,11 +114,7 @@ To allow programmatic access using the specific Client ID, you must add it to th
 
 ## Running the Sample Application
 
-You can run the sample application using either **Service Account Impersonation (Keyless)** or using the **Service Account Key File**.
-
-### Option A: Service Account Impersonation (Recommended, Keyless)
-
-This method uses your local `gcloud` login to automatically impersonate the client service account under the hood, without needing to download any key files or add custom impersonation logic to your code.
+This sample uses **Service Account Impersonation (Keyless)** to authenticate the client application with the IAP-secured Collector. This method uses your local `gcloud` login to automatically impersonate the client service account under the hood, without needing to download key files or add custom impersonation logic to your code.
 
 1. Authenticate application default credentials locally using the `--impersonate-service-account` flag:
    ```shell
@@ -148,27 +144,7 @@ This method uses your local `gcloud` login to automatically impersonate the clie
    ./gradlew :otlpiap:run
    ```
 
-### Option B: Using the Service Account Key File
-
-This method uses the downloaded JSON key file to authenticate directly as the client service account.
-Note: You need to update the `deploy-otel-collector-iap.sh` script to uncomment the steps for creating the client service account key.
-
-1. Set the environment variables pointing to your downloaded key and IAP configuration:
-   ```shell
-   export GOOGLE_APPLICATION_CREDENTIALS=client-sa-key.json
-   export OTEL_EXPORTER_OTLP_ENDPOINT="<YOUR_COLLECTOR_URL>"
-   export GOOGLE_AUTH_ID_TOKEN_AUDIENCE="<YOUR_IAP_CLIENT_ID>"
-   ```
-   *(See step 2 of Option A for instructions on how to find the `OTEL_EXPORTER_OTLP_ENDPOINT` and `GOOGLE_AUTH_ID_TOKEN_AUDIENCE` values)*
-
-
-2. Run the Java application using Gradle from the repository root:
-   ```shell
-   cd ../..
-   ./gradlew :otlpiap:run
-   ```
-
-3. Verification:
+4. Verification:
    - Go to the Google Cloud Console.
    - Navigate to **Trace > Trace list** to verify your trace span `iap-test-span` was exported.
    - Navigate to **Monitoring > Metrics Explorer** and look for `iap_test_counter` metric.
