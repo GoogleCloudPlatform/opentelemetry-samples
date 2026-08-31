@@ -41,9 +41,6 @@ public class OTLPIAPExample {
     if (resolvedIapClientId == null || resolvedIapClientId.isEmpty()) {
       resolvedIapClientId = System.getenv("GOOGLE_AUTH_ID_TOKEN_AUDIENCE");
     }
-    if (resolvedIapClientId == null || resolvedIapClientId.isEmpty()) {
-      resolvedIapClientId = System.getProperty("google.otel.auth.id.token.audience");
-    }
     final String iapClientId = resolvedIapClientId;
 
     if (collectorUrl == null || collectorUrl.isEmpty()) {

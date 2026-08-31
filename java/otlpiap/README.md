@@ -138,9 +138,9 @@ This sample uses **Service Account Impersonation (Keyless)** to authenticate the
      3. Navigate to **APIs & Services > Credentials** in your project.
      4. Under the **OAuth 2.0 Client IDs** section, locate and copy the client ID associated with your IAP service (typically named matching your Cloud Run service or IAP configuration).
 
-3. Run the Java application using Gradle from the repository root:
+3. Run the Java application using Gradle from the `opentelemetry-samples/java`:
    ```shell
-   cd ../..
+   cd ..
    ./gradlew :otlpiap:run
    ```
 
