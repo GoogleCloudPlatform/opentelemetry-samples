@@ -21,7 +21,7 @@ This environment variable also configures the [OpenTelemetry GCP Auth Extension]
 Finally, to run the sample from the project root:
 
 ```
-./gradlew :examples-otlptrace:run
+./gradlew :otlptrace:run
 ```
 
 Running this sample will generate and export Traces to Google Cloud.
