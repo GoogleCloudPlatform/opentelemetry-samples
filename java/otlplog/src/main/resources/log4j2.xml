@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2026 Google LLC
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<Configuration status="WARN">
+  <Appenders>
+    <!--
+      Plain console appender. The trace_id / span_id / trace_flags values come from Log4j's
+      context data, which is populated automatically by OpenTelemetryContextDataProvider
+      (provided by the opentelemetry-log4j-context-data-2.17-autoconfigure library).
+    -->
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout
+          pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} trace_id=%X{trace_id} span_id=%X{span_id} trace_flags=%X{trace_flags} - %msg%n"/>
+    </Console>
+
+    <!--
+      The OpenTelemetry log bridge. It converts Log4j2 log events into OpenTelemetry LogRecords and
+      hands them to the OpenTelemetry Log SDK. The SDK instance is attached programmatically at
+      startup via OpenTelemetryAppender.install(openTelemetrySdk).
+    -->
+    <OpenTelemetry name="OpenTelemetryAppender"
+        captureCodeAttributes="true"
+        captureMarkerAttribute="true"
+        captureTemplate="true"
+        captureArguments="true"
+        mapMessageAttributesIncluded="*"
+        contextDataAttributesIncluded="*"
+        contextDataAttributesExcluded="trace_id,span_id,trace_flags"/>
+  </Appenders>
+
+  <Loggers>
+    <Root level="DEBUG">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="OpenTelemetryAppender"/>
+    </Root>
+  </Loggers>
+</Configuration>

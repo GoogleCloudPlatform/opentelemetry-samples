@@ -1,0 +1,76 @@
+/*
+ * Copyright 2026 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+plugins {
+	id 'java'
+	id 'application'
+}
+
+version = '0.1.0'
+
+description = 'Example showing OTLP exporter being used for logs export to GCP'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation("io.opentelemetry:opentelemetry-api:1.67.0")
+	// Required at runtime by the Log4j2 appender: the SDK's ExtendedSdkLogRecordBuilder, which is
+	// used to attach log record attributes, references incubating API types.
+	implementation("io.opentelemetry:opentelemetry-api-incubator:1.67.0-alpha")
+	implementation("io.opentelemetry:opentelemetry-sdk:1.67.0")
+	implementation("io.opentelemetry:opentelemetry-exporter-otlp:1.67.0")
+	implementation("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.67.0")
+	implementation("io.opentelemetry.contrib:opentelemetry-gcp-resources:1.61.0-alpha")
+	implementation("io.opentelemetry.contrib:opentelemetry-gcp-auth-extension:1.61.0-alpha")
+	implementation("com.google.auth:google-auth-library-oauth2-http:1.54.0")
+
+	// Log4j2 is the logging library used by the application code to emit logs.
+	// log4j-core is needed on the compile classpath as well because OpenTelemetryAppender extends
+	// Log4j2's AbstractAppender.
+	implementation("org.apache.logging.log4j:log4j-api:2.26.1")
+	implementation("org.apache.logging.log4j:log4j-core:2.26.1")
+
+	// OpenTelemetry Log4j2 appender (the "log bridge"). It forwards Log4j2 log events to the
+	// OpenTelemetry Log SDK, which then exports them via the configured LogRecordProcessor and
+	// LogRecordExporter. Declared in `src/main/resources/log4j2.xml` and wired to the SDK by
+	// calling `OpenTelemetryAppender.install(openTelemetrySdk)` at startup.
+	implementation("io.opentelemetry.instrumentation:opentelemetry-log4j-appender-2.17:2.32.0-alpha")
+
+	// Log4j2 `ContextDataProvider` that injects `trace_id`, `span_id` and `trace_flags` of the
+	// currently active span into Log4j's context data (MDC). This is picked up automatically via
+	// the Log4j2 SPI, so it is only needed at runtime.
+	runtimeOnly("io.opentelemetry.instrumentation:opentelemetry-log4j-context-data-2.17-autoconfigure:2.32.0-alpha")
+}
+
+def autoconf_config = [
+	'-Dotel.exporter.otlp.endpoint=https://telemetry.googleapis.com',
+	// The GCP Auth Extension resolves the project from the GOOGLE_CLOUD_PROJECT environment
+	// variable. Alternatively, uncomment the line below and set your project ID explicitly.
+	// Note: this system property takes precedence over the environment variable.
+	// '-Dgoogle.cloud.project=<YOUR_PROJECT_ID>',
+	'-Dotel.logs.exporter=otlp',
+	'-Dotel.traces.exporter=otlp',
+	'-Dotel.metrics.exporter=none',
+	'-Dotel.service.name=otlplog-example',
+	'-Dotel.exporter.otlp.protocol=http/protobuf',
+	'-Dotel.java.global-autoconfigure.enabled=true',
+]
+
+application {
+	mainClassName = 'com.google.cloud.opentelemetry.samples.otlplog.OTLPLogExample'
+	applicationDefaultJvmArgs = autoconf_config
+}
