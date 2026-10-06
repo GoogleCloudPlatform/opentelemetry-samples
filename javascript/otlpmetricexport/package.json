@@ -24,7 +24,7 @@
     "@opentelemetry/resources": "2.7.1",
     "@opentelemetry/sdk-node": "0.218.0",
     "@opentelemetry/sdk-metrics": "2.7.1",
-    "@grpc/grpc-js": "1.14.4",
+    "@grpc/grpc-js": "1.14.5",
     "google-auth-library": "9.15.1"
   },
   "devDependencies": {
