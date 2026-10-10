@@ -44,6 +44,8 @@ async function main() {
         // Export metrics every 10 seconds. 5 seconds is the smallest sample period allowed by
         // Cloud Monitoring.
         exportIntervalMillis: 10_000,
+        // Cloud Monitoring allows at most 200 time series per write request.
+        maxExportBatchSize: 200,
         exporter: new OTLPMetricExporter({
           credentials: credentials.combineChannelCredentials(
             credentials.createSsl(),
