@@ -114,6 +114,7 @@ This sample uses OpenTelemetry SDK Autoconfigure. The default JVM arguments conf
 - `otel.service.name=otlplog-example`: Specifies the service name attribute associated with the emitted logs.
 - `otel.exporter.otlp.protocol=http/protobuf`: Uses HTTP/Protobuf for export. You can also switch to `grpc` if desired.
 - `otel.java.global-autoconfigure.enabled=true`: Enables global OpenTelemetry SDK autoconfiguration.
+- `otel.semconv-stability.opt-in=code`: Opts into emitting the [stable OpenTelemetry code attributes](https://opentelemetry.io/docs/specs/semconv/non-normative/code-attrs-migration/) (`code.file.path`, `code.function.name`, `code.line.number`) when `captureCodeAttributes="true"` is enabled, so Cloud Logging maps them to `sourceLocation`.
 
 Autoconfigure installs a `BatchLogRecordProcessor` wired to the OTLP `LogRecordExporter`. You can tune it with the standard `otel.blrp.*` properties (for example `otel.blrp.schedule.delay`), or build the pipeline by hand with `SdkLoggerProvider.builder().addLogRecordProcessor(...)` if you prefer explicit configuration over autoconfiguration.
 
@@ -144,15 +145,18 @@ gcloud logging read 'logName="projects/YOUR_PROJECT_ID/logs/otlp"' --limit=10 --
 | Body | `textPayload` (for string/array bodies) or `jsonPayload` (for key-value list bodies) |
 | Severity | `severity` |
 | Trace / span ID | `trace`, `spanId`, `traceSampled` |
+| Code attributes (`code.file.path`, `code.function.name`, `code.line.number`) | `sourceLocation` |
 | Log record attributes | `labels` |
 | Resource attributes | `otel.resource.attributes` |
 | Instrumentation scope | `otel.scope` (e.g., `otel.scope.name`, `otel.scope.version`) |
 
-With the appender settings used here, a single Log4j2 call produces labels such as:
+With the appender settings used here, a single Log4j2 call populates `sourceLocation` (`sourceLocation.file`, `sourceLocation.function`, `sourceLocation.line`) from `captureCodeAttributes` and produces `labels` such as:
 
-- `code.namespace`, `code.function`, `code.filepath`, `code.lineno` — from `captureCodeAttributes`
 - `log.body.template`, `log.body.parameters` — from `captureTemplate` / `captureArguments`
 - `usecase.name` — from `CloseableThreadContext` (MDC)
 - `log4j.map_message.work.description`, `log4j.map_message.work.duration_ms` — from the `StringMapMessage`
 - `exception.type`, `exception.message`, `exception.stacktrace` — when a `Throwable` is logged
+
+> [!NOTE]
+> Because `-Dotel.semconv-stability.opt-in=code` is configured, `captureCodeAttributes="true"` emits the [stable OpenTelemetry code attributes](https://opentelemetry.io/docs/specs/semconv/non-normative/code-attrs-migration/) (`code.file.path`, `code.function.name`, `code.line.number`), which Cloud Logging maps to the top-level `sourceLocation` field and removes from `labels`. Without that flag, OpenTelemetry Java Instrumentation 2.x emits the legacy v0 attributes (`code.filepath`, `code.function`, `code.namespace`, `code.lineno`), which appear under `labels` instead.
 

@@ -68,6 +68,7 @@ def autoconf_config = [
 	'-Dotel.service.name=otlplog-example',
 	'-Dotel.exporter.otlp.protocol=http/protobuf',
 	'-Dotel.java.global-autoconfigure.enabled=true',
+	'-Dotel.semconv-stability.opt-in=code',
 ]
 
 application {
