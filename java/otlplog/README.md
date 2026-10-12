@@ -21,7 +21,7 @@ Rather than calling the OpenTelemetry Logs API from application code, this sampl
    - Linux, macOS: `$HOME/.config/gcloud/application_default_credentials.json`
    - Windows: `%APPDATA%\gcloud\application_default_credentials.json`
 
-   Ensure the authenticated principal or service account has the **Logs Writer** role (`roles/logging.logWriter`).
+   Ensure the authenticated principal or service account has the **Cloud Telemetry Logs Writer** (`roles/telemetry.logsWriter`) and **Cloud Telemetry Traces Writer** (`roles/telemetry.tracesWriter`, for emitting correlated traces) roles.
 
 3. **Set the Google Cloud Project ID**:
    ```shell
@@ -82,6 +82,7 @@ The appender is declared in [`log4j2.xml`](src/main/resources/log4j2.xml):
 ```
 
 - `captureCodeAttributes` records the class, method, file and line of the logging call site.
+- `captureMarkerAttribute` records the Log4j2 `Marker` name under the `log4j.marker` attribute when a marker is attached to a log event.
 - `captureTemplate` / `captureArguments` preserve the unformatted message template and its arguments as attributes, which makes logs easier to group and query.
 - `mapMessageAttributesIncluded="*"` turns Log4j2 `MapMessage` entries into log record attributes. The sample uses a `StringMapMessage` in `doWork` to emit structured key/value data.
 - `contextDataAttributesIncluded="*"` turns Log4j `ThreadContext` (MDC) entries into log record attributes. The sample uses `CloseableThreadContext` to attach `usecase.name` to every record within a use case.
@@ -108,7 +109,7 @@ This sample uses OpenTelemetry SDK Autoconfigure. The default JVM arguments conf
 
 - `otel.exporter.otlp.endpoint=https://telemetry.googleapis.com`: The Google Cloud Telemetry API endpoint. The SDK automatically routes logs to `/v1/logs`.
 - `otel.logs.exporter=otlp`: Enables the OTLP exporter for logs.
-- `otel.traces.exporter=none`: Disables trace export in this standalone logs sample. Spans are still created locally so that trace context is available for log correlation.
+- `otel.traces.exporter=otlp`: Enables the OTLP exporter for traces so that the spans correlated with the emitted logs are also exported to Cloud Trace.
 - `otel.metrics.exporter=none`: Disables metric export in this standalone logs sample.
 - `otel.service.name=otlplog-example`: Specifies the service name attribute associated with the emitted logs.
 - `otel.exporter.otlp.protocol=http/protobuf`: Uses HTTP/Protobuf for export. You can also switch to `grpc` if desired.
@@ -118,7 +119,7 @@ Autoconfigure installs a `BatchLogRecordProcessor` wired to the OTLP `LogRecordE
 
 ## Viewing Logs in Google Cloud Console
 
-Logs ingested through the Telemetry API are written to the `otlp` log name. After running the sample, view them in the [Google Cloud Logs Explorer](https://console.cloud.google.com/logs/query):
+Logs ingested through the Telemetry API default to the `otlp` log name when the OTLP `LogRecord` does not specify an `event_name` or a log-name attribute (such as `log.name` or `gcp.log_name`). After running the sample, view them in the [Google Cloud Logs Explorer](https://console.cloud.google.com/logs/query):
 
 1. Select your project in Google Cloud Console.
 2. In the query box, enter:
@@ -140,12 +141,12 @@ gcloud logging read 'logName="projects/YOUR_PROJECT_ID/logs/otlp"' --limit=10 --
 
 | OpenTelemetry log record | Cloud Logging entry |
 | --- | --- |
-| Body | `textPayload` |
+| Body | `textPayload` (for string/array bodies) or `jsonPayload` (for key-value list bodies) |
 | Severity | `severity` |
 | Trace / span ID | `trace`, `spanId`, `traceSampled` |
 | Log record attributes | `labels` |
 | Resource attributes | `otel.resource.attributes` |
-| Instrumentation scope | `otel.scope.name` |
+| Instrumentation scope | `otel.scope` (e.g., `otel.scope.name`, `otel.scope.version`) |
 
 With the appender settings used here, a single Log4j2 call produces labels such as:
 
