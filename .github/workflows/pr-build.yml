@@ -35,7 +35,7 @@ jobs:
       contents: read
     strategy:
       matrix:
-        sample: [otlpmetric, otlptrace, resource, otlp-spring, otlpmetrics-function, autoconf-auth-extension, instrumentation-quickstart, otlpiap]
+        sample: [otlpmetric, otlptrace, resource, otlp-spring, otlpmetrics-function, autoconf-auth-extension, instrumentation-quickstart, otlpiap, otlplog]
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
