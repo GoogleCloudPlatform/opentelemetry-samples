@@ -65,7 +65,12 @@ func main() {
 
 	meterProvider := sdkmetric.NewMeterProvider(
 		sdkmetric.WithResource(res),
-		sdkmetric.WithReader(sdkmetric.NewPeriodicReader(metricExporter)),
+		sdkmetric.WithReader(
+			sdkmetric.NewPeriodicReader(
+				metricExporter,
+				sdkmetric.WithMaxExportBatchSize(200),
+			),
+		),
 	)
 
 	defer func() {

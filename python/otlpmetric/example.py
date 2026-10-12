@@ -44,7 +44,10 @@ channel_creds = grpc.composite_channel_credentials(
     grpc.metadata_call_credentials(auth_metadata_plugin),
 )
 
-exporter = OTLPMetricExporter(credentials=channel_creds)
+exporter = OTLPMetricExporter(
+    credentials=channel_creds,
+    max_export_batch_size=200,
+)
 reader = PeriodicExportingMetricReader(exporter)
 provider = MeterProvider(metric_readers=[reader], resource=resource)
 meter = provider.get_meter("gcp.otlp.sample")
