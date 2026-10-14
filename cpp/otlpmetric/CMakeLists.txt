@@ -1,0 +1,69 @@
+# Copyright 2026 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+cmake_minimum_required(VERSION 3.20)
+project(otlp_metric_cpp CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build static libraries" FORCE)
+
+include(FetchContent)
+
+set(WITH_OTLP_GRPC ON CACHE BOOL "Enable OTLP gRPC exporter" FORCE)
+set(WITH_OTLP_HTTP OFF CACHE BOOL "Disable OTLP HTTP exporter" FORCE)
+set(WITH_OTLP_FILE OFF CACHE BOOL "Disable OTLP file exporter" FORCE)
+set(WITH_OTLP_GRPC_CREDENTIAL_PREVIEW ON CACHE BOOL "Enable gRPC credential preview" FORCE)
+set(BUILD_TESTING OFF CACHE BOOL "Disable testing" FORCE)
+set(WITH_BENCHMARK OFF CACHE BOOL "Disable benchmarks" FORCE)
+set(WITH_FUNC_TESTS OFF CACHE BOOL "Disable func tests" FORCE)
+set(WITH_EXAMPLES OFF CACHE BOOL "Disable examples" FORCE)
+
+add_compile_definitions(ENABLE_OTLP_GRPC_CREDENTIAL_PREVIEW)
+
+# [START opentelemetry_otlp_grpc_auth_deps]
+find_package(gRPC REQUIRED)
+# [END opentelemetry_otlp_grpc_auth_deps]
+find_package(Protobuf REQUIRED)
+find_package(Threads REQUIRED)
+
+# [START opentelemetry_otlp_grpc_deps]
+FetchContent_Declare(
+    opentelemetry_cpp
+    GIT_REPOSITORY https://github.com/open-telemetry/opentelemetry-cpp.git
+    GIT_TAG v1.28.0
+)
+FetchContent_MakeAvailable(opentelemetry_cpp)
+# [END opentelemetry_otlp_grpc_deps]
+
+add_library(otlpmetric_lib STATIC otlpmetric.cc)
+target_include_directories(otlpmetric_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(otlpmetric_lib PUBLIC
+    opentelemetry_metrics
+    opentelemetry_exporter_otlp_grpc_metrics
+    opentelemetry_resources
+    gRPC::grpc++
+    gRPC::grpc
+    protobuf::libprotobuf
+    Threads::Threads
+)
+
+add_executable(otlpmetric example.cc)
+target_link_libraries(otlpmetric PRIVATE otlpmetric_lib)
+
+enable_testing()
+add_executable(otlpmetric_test tests/otlpmetric_test.cc)
+target_link_libraries(otlpmetric_test PRIVATE otlpmetric_lib)
+add_test(NAME otlpmetric_test COMMAND otlpmetric_test)
