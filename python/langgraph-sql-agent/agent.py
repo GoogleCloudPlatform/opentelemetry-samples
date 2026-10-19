@@ -71,7 +71,7 @@ tracer = trace.get_tracer(__name__)
 
 
 def run_agent(*, model_name: str, recursion_limit: int = 50) -> None:
-    model = ChatGoogleGenerativeAI(model=model_name)
+    model = ChatGoogleGenerativeAI(model=model_name, max_retries=3)
     checkpointer = InMemorySaver()
 
     # Ephemeral sqlite database per run

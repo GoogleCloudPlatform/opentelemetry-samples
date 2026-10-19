@@ -18,7 +18,9 @@ import grpc
 from google.auth.transport.grpc import AuthMetadataPlugin
 from opentelemetry import _logs as logs
 from opentelemetry import metrics, trace
-from opentelemetry.exporter.cloud_logging import CloudLoggingExporter
+from opentelemetry.exporter.otlp.proto.grpc._log_exporter import (
+    OTLPLogExporter,
+)
 from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import (
     OTLPMetricExporter,
 )
@@ -86,7 +88,12 @@ def setup_opentelemetry() -> None:
 
     logger_provider = LoggerProvider(resource=resource)
     logger_provider.add_log_record_processor(
-        BatchLogRecordProcessor(CloudLoggingExporter())
+        BatchLogRecordProcessor(
+            OTLPLogExporter(
+                credentials=channel_creds,
+                endpoint="https://telemetry.googleapis.com:443/v1/logs",
+            )
+        )
     )
     logs.set_logger_provider(logger_provider)
 
@@ -108,11 +115,11 @@ def setup_opentelemetry() -> None:
 
 # Make sure to set:
 # OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true
-# OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=true
+# OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=event_only
 # in order to full prompts and responses and logs messages.
 setup_opentelemetry()
 run_agent(
-    model_name="gemini-3.5-flash",
+    model_name="gemini-3.7-flash",
     # You can increase this, but it may incur more token usage
     # https://langchain-ai.github.io/langgraph/troubleshooting/errors/GRAPH_RECURSION_LIMIT/#troubleshooting
     recursion_limit=50,

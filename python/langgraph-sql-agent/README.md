@@ -35,7 +35,7 @@ cd opentelemetry-samples/python/langgraph-sql-agent
 # https://reference.langchain.com/python/langchain-google-genai/embeddings/GoogleGenerativeAIEmbeddings/location
 export GOOGLE_CLOUD_REGION=global
 # Capture GenAI prompts and responses
-export OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=true
+export OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=event_only
 # Capture application logs automatically
 export OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true
 ```
