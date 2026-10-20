@@ -42,6 +42,8 @@ Alternatively if you have [`uv`](https://docs.astral.sh/uv/) installed:
 
 ```sh
 export GOOGLE_CLOUD_PROJECT="<your-project-id>"
+# Exporting metrics require cloud.region attribute to be present
+export OTEL_RESOURCE_ATTRIBUTES=cloud.region="<your-preferred-region>"
 uv run --env-file opentelemetry.env adk web --otel_to_cloud
 ```
 
@@ -50,5 +52,7 @@ uv run --env-file opentelemetry.env adk web --otel_to_cloud
 To view the generated traces with [Generative AI
 events](https://cloud.google.com/trace/docs/finding-traces#view_generative_ai_events) in the
 GCP console, use the [Trace Explorer](https://cloud.google.com/trace/docs/finding-traces). Filter for spans with OpenTelemetry Service: `adk-sql-agent`.
+
+To view the generated metrics in the GCP console, use the [Metrics Explorer](https://cloud.google.com/monitoring/charts/metrics-explorer). Select the **Prometheus Target** resource (`prometheus_target`) and look under the **Gen Ai** metric category (for example, `gen_ai.client.token.usage`, `gen_ai.client.operation.duration`, `gen_ai.invoke_agent.duration`, or `gen_ai.execute_tool.duration`), filtering by `job = adk-sql-agent`.
 
 [ADC]: https://cloud.google.com/docs/authentication/application-default-credentials
