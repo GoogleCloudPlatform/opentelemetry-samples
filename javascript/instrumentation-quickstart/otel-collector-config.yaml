@@ -124,11 +124,7 @@ receivers:
         value: true
 
 exporters:
-  # Export logs and traces using the standard googelcloud exporter
-  googlecloud:
-    project: ${GOOGLE_CLOUD_PROJECT}
-    log:
-      default_log_name: "opentelemetry.io/collector-exported-log"
+  # Export telemetry using standard OTLP HTTP exporter to Google Cloud
   otlphttp:
     encoding: proto
     endpoint: https://telemetry.googleapis.com
@@ -186,5 +182,5 @@ service:
       exporters: ["otlphttp"]
     logs:
       receivers: ["filelog"]
-      processors: ["batch", "resourcedetection"]
-      exporters: ["googlecloud"]
+      processors: ["batch", "resourcedetection", "resource/gcp_project_id"]
+      exporters: ["otlphttp"]
