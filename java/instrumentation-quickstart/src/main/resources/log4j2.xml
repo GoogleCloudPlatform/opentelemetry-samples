@@ -17,36 +17,15 @@
 <Configuration status="WARN">
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
-      <!-- TODO(#331): output logging.googleapis.com/trace_sampled based on trace_flags instead
-      of hardcoding as true -->
       <!-- [START opentelemetry_instrumentation_setup_logging] -->
       <!-- Format JSON logs for the Cloud Logging agent
       https://cloud.google.com/logging/docs/structured-logging#special-payload-fields -->
 
       <!-- Log4j2's JsonTemplateLayout includes a template for Cloud Logging's special JSON fields
+      (including trace and span IDs from Mapped Diagnostic Context (MDC) so that Cloud Logging can
+      correlate Logs and Spans)
       https://logging.apache.org/log4j/2.x/manual/json-template-layout.html#event-templates -->
-      <JsonTemplateLayout eventTemplateUri="classpath:GcpLayout.json">
-        <!-- Extend the included GcpLayout to include the trace and span IDs from Mapped
-        Diagnostic Context (MDC) so that Cloud Logging can correlate Logs and Spans
-
-        Since log4j2 2.24.0, GcpLayout.json already includes trace context logging from MDC and
-        the below additional fields are no longer needed -->
-        <EventTemplateAdditionalField
-          key="logging.googleapis.com/trace"
-          format="JSON"
-          value='{"$resolver": "mdc", "key": "trace_id"}'
-        />
-        <EventTemplateAdditionalField
-          key="logging.googleapis.com/spanId"
-          format="JSON"
-          value='{"$resolver": "mdc", "key": "span_id"}'
-        />
-        <EventTemplateAdditionalField
-          key="logging.googleapis.com/trace_sampled"
-          format="JSON"
-          value="true"
-        />
-      </JsonTemplateLayout>
+      <JsonTemplateLayout eventTemplateUri="classpath:GcpLayout.json"/>
       <!-- [END opentelemetry_instrumentation_setup_logging] -->
     </Console>
   </Appenders>
