@@ -3,16 +3,16 @@ name = "instrumentation-quickstart"
 version = "0.1.0"
 description = "A Flask app instrumented with OpenTelemetry and structured logging for GCP"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
-    "flask>=3.1.0",
-    "gunicorn>=23.0.0",
-    "opentelemetry-api>=1.29.0",
-    "opentelemetry-exporter-otlp-proto-http>=1.29.0",
-    "opentelemetry-instrumentation-flask>=0.50b0",
-    "opentelemetry-instrumentation-logging>=0.50b0",
-    "opentelemetry-instrumentation-requests>=0.50b0",
-    "opentelemetry-sdk>=1.29.0",
-    "python-json-logger>=3.2.0",
-    "requests>=2.32.3",
+    "flask>=3.1.3",
+    "gunicorn>=26.2.0",
+    "opentelemetry-api>=1.45.1",
+    "opentelemetry-exporter-otlp-proto-http>=1.45.1",
+    "opentelemetry-instrumentation-flask>=0.66b1",
+    "opentelemetry-instrumentation-logging>=0.66b1",
+    "opentelemetry-instrumentation-requests>=0.66b1",
+    "opentelemetry-sdk>=1.45.1",
+    "python-json-logger>=4.2.0",
+    "requests>=2.34.2",
 ]
