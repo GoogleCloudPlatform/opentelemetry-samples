@@ -12,10 +12,10 @@ Docker compose also runs the OpenTelemetry collector, set up to receive telemetr
 
 ## Permissions
 
-This sample writes to Cloud Logging, Cloud Monitoring, and Cloud Trace. Grant yourself the following roles to run the example:
-- `roles/logging.logWriter` – see https://cloud.google.com/logging/docs/access-control#permissions_and_roles
-- `roles/monitoring.metricWriter` – see https://cloud.google.com/monitoring/access-control#predefined_roles
-- `roles/cloudtrace.agent` – see https://cloud.google.com/trace/docs/iam#trace-roles
+This sample writes to Cloud Logging, Cloud Monitoring, and Cloud Trace via the Google Cloud Telemetry API. Grant yourself the following roles to run the example:
+- `roles/telemetry.logsWriter` – see https://cloud.google.com/iam/docs/roles-permissions/telemetry#telemetry.logsWriter
+- `roles/telemetry.metricsWriter` – see https://cloud.google.com/iam/docs/roles-permissions/telemetry#telemetry.metricsWriter
+- `roles/telemetry.tracesWriter` – see https://cloud.google.com/iam/docs/roles-permissions/telemetry#telemetry.tracesWriter
 
 ## Running the example
 

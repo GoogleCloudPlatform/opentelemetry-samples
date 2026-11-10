@@ -12,8 +12,8 @@ This sample demonstrates how to export OpenTelemetry metrics directly from a C++
 
 ## Permissions
 
-Grant the `roles/monitoring.metricWriter` IAM role to your account or service account:
-https://cloud.google.com/monitoring/access-control#roles_descriptions
+Grant the `roles/telemetry.metricsWriter` IAM role to your account or service account:
+https://cloud.google.com/iam/docs/roles-permissions/telemetry#telemetry.metricsWriter
 
 ## Running Locally
 

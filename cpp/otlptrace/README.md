@@ -12,8 +12,8 @@ This sample demonstrates how to export OpenTelemetry traces directly from a C++ 
 
 ## Permissions
 
-Grant the `roles/cloudtrace.agent` IAM role to your account or service account:
-https://cloud.google.com/trace/docs/iam#trace-roles
+Grant the `roles/telemetry.tracesWriter` IAM role to your account or service account:
+https://cloud.google.com/iam/docs/roles-permissions/telemetry#telemetry.tracesWriter
 
 ## Running Locally
 
